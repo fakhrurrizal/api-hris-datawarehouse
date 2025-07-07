@@ -1,0 +1,107 @@
+definitions:
+  reqres.SignInRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+  description: API documentation by Kang Fakhrur
+  title: HRIS Data Warehouse
+  version: V1.2412.081710
+paths:
+  /v1/auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: SignIn
+      parameters:
+      - description: csrf token
+        in: header
+        name: x-csrf-token
+        type: string
+      - description: SignIn user
+        in: body
+        name: signin
+        required: true
+        schema:
+          $ref: '#/definitions/reqres.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: SignIn
+      tags:
+      - Auth
+  /v1/dashboard/score-card:
+    get:
+      description: Get Dashboard Score Card
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: gender (string) (m/f)
+        in: query
+        name: gender
+        type: string
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Score Card
+      tags:
+      - Dashboard
+  /version:
+    get:
+      consumes:
+      - application/json
+      description: Get Version Build
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Get Version Build
+      tags:
+      - Home
+securityDefinitions:
+  JwtToken:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

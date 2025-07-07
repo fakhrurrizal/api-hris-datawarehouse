@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Verifikasi Email Anda - {{.AppName}}</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+    "
+  >
+    <!-- Outer Table -->
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #f5f5f5;"
+    >
+      <tr>
+        <td align="center">
+          <!-- Email Container -->
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              background-color: #ffffff;
+              border-radius: 16px;
+              box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+              margin: 20px auto;
+            "
+          >
+            <!-- Hero Section with Background Image and Overlay Text -->
+            <!-- <tr>
+              <td style="position: relative; text-align: center;">
+                <img
+                  src="/assets/images/header.png"
+                  alt="AYO TRIP - Experience Luxury Travel"
+                  style="
+                    width: 100%;
+                    display: block;
+                    border-top-left-radius: 16px;
+                    border-top-right-radius: 16px;
+                  "
+                />
+                <div
+                  style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    text-align: center;
+                    color: #fff;
+                    z-index: 2;
+                  "
+                >
+                  <h1
+                    style="
+                      font-family: 'Playfair Display', serif;
+                      font-size: 42px;
+                      margin: 0;
+                      letter-spacing: 1px;
+                      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+                    "
+                  >
+                    AYO TRIP
+                  </h1>
+                  <p
+                    style="
+                      font-size: 18px;
+                      margin: 10px 0 0;
+                      text-transform: uppercase;
+                      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+                    "
+                  >
+                    Experience Luxury Travel
+                  </p>
+                </div>
+              </td>
+            </tr> -->
+
+            <!-- Content Section -->
+            <tr>
+              <td style="padding: 40px;">
+                <h1
+                  style="
+                    font-family: 'Playfair Display', serif;
+                    font-size: 28px;
+                    color: #01579b;
+                    text-align: center;
+                    margin: 0 0 30px;
+                  "
+                >
+                  Verifikasi Email Anda
+                </h1>
+                <p
+                  style="
+                    font-size: 16px;
+                    line-height: 1.8;
+                    color: #555555;
+                    margin: 0 0 24px;
+                  "
+                >
+                  Halo <strong>{{.Fullname}}</strong>,
+                </p>
+                <p
+                  style="
+                    font-size: 16px;
+                    line-height: 1.8;
+                    color: #555555;
+                    margin: 0 0 24px;
+                  "
+                >
+                  Selamat datang di keluarga eksklusif
+                  <strong>{{.AppName}}</strong>! Kami sangat menghargai
+                  kepercayaan Anda memilih kami sebagai mitra petualangan mewah
+                  Anda.
+                </p>
+                <p
+                  style="
+                    font-size: 16px;
+                    line-height: 1.8;
+                    color: #555555;
+                    margin: 0 0 24px;
+                  "
+                >
+                  Untuk mengaktifkan akun Anda dan mengakses semua
+                  keuntungannya, mohon verifikasi alamat email Anda:
+                </p>
+                <!-- Button -->
+                <table
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="text-align: center; margin: 30px 0;"
+                >
+                  <tr>
+                    <td>
+                      <a
+                        href="{{.FrontendUrl}}/email-verification?token={{.Token}}"
+                        style="
+                          display: inline-block;
+                          background-color: #ffc107;
+                          color: #01579b;
+                          font-size: 18px;
+                          font-weight: bold;
+                          text-decoration: none;
+                          padding: 18px 45px;
+                          border-radius: 50px;
+                        "
+                        >VERIFIKASI AKUN SAYA</a
+                      >
+                    </td>
+                  </tr>
+                </table>
+                <!-- Info Box -->
+                <p
+                  style="
+                    font-size: 16px;
+                    line-height: 1.8;
+                    color: #555555;
+                    margin: 0 0 24px;
+                  "
+                >
+                  Atau salin dan tempel tautan berikut ke browser Anda:
+                </p>
+                <div
+                  style="
+                    background-color: #f5f5f5;
+                    padding: 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    color: #01579b;
+                    border-left: 4px solid #ffc107;
+                    font-family: monospace;
+                  "
+                >
+                  {{.FrontendUrl}}/email-verification?token={{.Token}}
+                </div>
+                <p
+                  style="
+                    font-size: 16px;
+                    line-height: 1.8;
+                    color: #555555;
+                    margin: 24px 0 0;
+                  "
+                >
+                  Tautan eksklusif ini akan kadaluarsa dalam
+                  <strong style="color: #ffa000;">24 jam</strong>. Jika Anda
+                  tidak melakukan permintaan ini, mohon abaikan email ini.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Divider -->
+            <tr>
+              <td
+                style="
+                  height: 1px;
+                  background: linear-gradient(
+                    to right,
+                    transparent,
+                    #e0e0e0,
+                    transparent
+                  );
+                  margin: 40px 0;
+                "
+              ></td>
+            </tr>
+
+            <!-- Signature -->
+            <tr>
+              <td style="text-align: center; padding: 0 0 40px;">
+                <p
+                  style="
+                    font-size: 17px;
+                    color: #01579b;
+                    font-style: italic;
+                    margin: 0;
+                  "
+                >
+                  Sampai bertemu di destinasi impian,<br /><strong
+                    >Tim {{.AppName}}</strong
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Footer -->
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              background-color: #01579b;
+              text-align: center;
+              padding: 30px;
+              margin: 20px auto;
+            "
+          >
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-size: 14px;
+                    color: rgba(255, 255, 255, 0.9);
+                    margin: 0 0 10px;
+                  "
+                >
+                  &copy; 2025 Ayo Trip. All Rights Reserved.
+                </p>
+                <p
+                  style="
+                    font-size: 14px;
+                    color: rgba(255, 255, 255, 0.9);
+                    margin: 0 0 20px;
+                  "
+                >
+                  Universitas Esa Unggul Jakarta Barat
+                </p>
+                <div style="margin-top: 20px;">
+                  <a
+                    href="#"
+                    style="
+                      color: #ffc107;
+                      text-decoration: none;
+                      margin: 0 12px;
+                      font-weight: 500;
+                    "
+                    >Beranda</a
+                  >
+                  |
+                  <a
+                    href="#"
+                    style="
+                      color: #ffc107;
+                      text-decoration: none;
+                      margin: 0 12px;
+                      font-weight: 500;
+                    "
+                    >Villa Eksklusif</a
+                  >
+                  |
+                  <a
+                    href="#"
+                    style="
+                      color: #ffc107;
+                      text-decoration: none;
+                      margin: 0 12px;
+                      font-weight: 500;
+                    "
+                    >Kapal Pribadi</a
+                  >
+                  |
+                  <a
+                    href="#"
+                    style="
+                      color: #ffc107;
+                      text-decoration: none;
+                      margin: 0 12px;
+                      font-weight: 500;
+                    "
+                    >Kebijakan</a
+                  >
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
