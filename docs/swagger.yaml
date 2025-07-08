@@ -41,6 +41,20 @@ paths:
       summary: SignIn
       tags:
       - Auth
+  /v1/auth/user:
+    get:
+      description: Get Sign In User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Sign In User
+      tags:
+      - Auth
   /v1/dashboard/average-performance-score-per-department:
     get:
       description: Get Dashboard Average Performance Score Per Department with Employee

@@ -46,6 +46,7 @@ func Init(app *echo.Echo) {
 		auth := api.Group("/auth")
 		{
 			auth.POST("/signin", controllers.SignIn)
+			auth.GET("/user", controllers.GetSignInUser, middlewares.Auth())
 		}
 		dashboard := api.Group("/dashboard", middlewares.CheckAPIKey())
 		{

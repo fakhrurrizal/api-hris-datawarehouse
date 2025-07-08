@@ -31,3 +31,8 @@ func SignIn(email, password string) (user models.GlobalUser, token string, err e
 	}
 	return
 }
+
+func GetUserByIDPlain(id int) (response models.GlobalUser, err error) {
+	err = config.DB.First(&response, id).Error
+	return
+}
