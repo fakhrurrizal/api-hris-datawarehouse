@@ -915,6 +915,293 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/dashboard/linechart-late-absence-trend": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Get Dashboard Line Chart Late/Absence Trend per Month/Year",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Dashboard Line Chart Late/Absence Trend",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "department_id (int)",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "emp_status_id (int)",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "position_id (int)",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "manager_id (int)",
+                        "name": "manager_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "month",
+                        "description": "period_type (month/year)",
+                        "name": "period_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "both",
+                        "description": "trend_type (late/absence/both)",
+                        "name": "trend_type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/linechart-performance-trend": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Get Dashboard Line Chart Average Performance Score Trend per Month/Year",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Dashboard Line Chart Performance Score Trend",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "department_id (int)",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "emp_status_id (int)",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "position_id (int)",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "manager_id (int)",
+                        "name": "manager_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "month",
+                        "description": "period_type (month/year)",
+                        "name": "period_type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/linechart-recruitment-trend": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Get Dashboard Line Chart Recruitment Trend per Month/Year",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Dashboard Line Chart Recruitment Trend",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "department_id (int)",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "emp_status_id (int)",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "position_id (int)",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "manager_id (int)",
+                        "name": "manager_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "month",
+                        "description": "period_type (month/year)",
+                        "name": "period_type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/linechart-turnover-trend": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Get Dashboard Line Chart Turnover Trend per Month/Year",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Dashboard Line Chart Turnover Trend",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "department_id (int)",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "emp_status_id (int)",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "position_id (int)",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "manager_id (int)",
+                        "name": "manager_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "month",
+                        "description": "period_type (month/year)",
+                        "name": "period_type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/v1/dashboard/piechart-employee-termination-ratio": {
             "get": {
                 "security": [

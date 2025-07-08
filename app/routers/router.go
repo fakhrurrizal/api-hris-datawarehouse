@@ -63,6 +63,12 @@ func Init(app *echo.Echo) {
 			dashboard.GET("/barchart-employee-termination-by-reason", controllers.GetDashboardBarChartEmployeeTerminationByReason, middlewares.Auth())
 			dashboard.GET("/barchart-employee-termination-by-department", controllers.GetDashboardBarChartEmployeeTerminationByDepartment, middlewares.Auth())
 			dashboard.GET("/piechart-employee-termination-ratio", controllers.GetDashboardPieChartEmployeeTerminationRatio, middlewares.Auth())
+			dashboard.GET("/linechart-recruitment-trend", controllers.GetDashboardLineChartRecruitmentTrend, middlewares.Auth())
+			dashboard.GET("/linechart-performance-trend", controllers.GetDashboardLineChartPerformanceTrend, middlewares.Auth())
+			dashboard.GET("/linechart-turnover-trend", controllers.GetDashboardLineChartTurnoverTrend, middlewares.Auth())
+			dashboard.GET("/linechart-late-absence-trend", controllers.GetDashboardLineChartLateAbsenceTrend, middlewares.Auth())
+			dashboard.GET("/linechart-late-absence-trend", controllers.GetDashboardLineChartLateAbsenceTrend, middlewares.Auth())
+
 		}
 		dim := api.Group("/dim", middlewares.CheckAPIKey())
 		{

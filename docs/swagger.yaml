@@ -580,6 +580,187 @@ paths:
       summary: Get Dashboard Highest and Lowest Salary
       tags:
       - SalaryDistribution
+  /v1/dashboard/linechart-late-absence-trend:
+    get:
+      description: Get Dashboard Line Chart Late/Absence Trend per Month/Year
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      - default: month
+        description: period_type (month/year)
+        in: query
+        name: period_type
+        type: string
+      - default: both
+        description: trend_type (late/absence/both)
+        in: query
+        name: trend_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Line Chart Late/Absence Trend
+      tags:
+      - Dashboard
+  /v1/dashboard/linechart-performance-trend:
+    get:
+      description: Get Dashboard Line Chart Average Performance Score Trend per Month/Year
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      - default: month
+        description: period_type (month/year)
+        in: query
+        name: period_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Line Chart Performance Score Trend
+      tags:
+      - Dashboard
+  /v1/dashboard/linechart-recruitment-trend:
+    get:
+      description: Get Dashboard Line Chart Recruitment Trend per Month/Year
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      - default: month
+        description: period_type (month/year)
+        in: query
+        name: period_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Line Chart Recruitment Trend
+      tags:
+      - Dashboard
+  /v1/dashboard/linechart-turnover-trend:
+    get:
+      description: Get Dashboard Line Chart Turnover Trend per Month/Year
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      - default: month
+        description: period_type (month/year)
+        in: query
+        name: period_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Line Chart Turnover Trend
+      tags:
+      - Dashboard
   /v1/dashboard/piechart-employee-termination-ratio:
     get:
       description: Get Dashboard Pie Chart Employee Termination Ratio (Voluntarily
