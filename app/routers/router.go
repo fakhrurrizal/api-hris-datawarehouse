@@ -50,7 +50,31 @@ func Init(app *echo.Echo) {
 		dashboard := api.Group("/dashboard", middlewares.CheckAPIKey())
 		{
 			dashboard.GET("/score-card", controllers.GetDashboardScoreCard, middlewares.Auth())
+			dashboard.GET("/barchart-employee-per-department", controllers.GetDashboardBarChartEmployeePerDepartment, middlewares.Auth())
+			dashboard.GET("/barchart-employee-per-gender", controllers.GetDashboardBarChartEmployeePerGender, middlewares.Auth())
+			dashboard.GET("/barchart-employee-per-recruitment-source", controllers.GetDashboardBarChartEmployeePerRecruitmentSource, middlewares.Auth())
+			dashboard.GET("/barchart-employee-per-citizen-desc", controllers.GetDashboardBarChartEmployeePerCitizenDesc, middlewares.Auth())
+			dashboard.GET("/barchart-employee-per-race-desc", controllers.GetDashboardBarChartEmployeePerRaceDesc, middlewares.Auth())
+			dashboard.GET("/barchart-average-salary-per-department", controllers.GetDashboardBarChartAverageSalaryPerDepartment, middlewares.Auth())
+			dashboard.GET("/barchart-average-salary-per-position", controllers.GetDashboardBarChartAverageSalaryPerPosition, middlewares.Auth())
+			dashboard.GET("/highest-lowest-salary", controllers.GetDashboardHighestLowestSalary, middlewares.Auth())
+			dashboard.GET("/average-performance-score-per-department", controllers.GetDashboardAveragePerformanceScorePerDepartmentWithCount, middlewares.Auth())
+			dashboard.GET("/barchart-average-emp-satisfaction-per-position", controllers.GetDashboardBarChartAverageEmpSatisfactionPerPosition, middlewares.Auth())
+			dashboard.GET("/barchart-employee-termination-by-reason", controllers.GetDashboardBarChartEmployeeTerminationByReason, middlewares.Auth())
+			dashboard.GET("/barchart-employee-termination-by-department", controllers.GetDashboardBarChartEmployeeTerminationByDepartment, middlewares.Auth())
+			dashboard.GET("/piechart-employee-termination-ratio", controllers.GetDashboardPieChartEmployeeTerminationRatio, middlewares.Auth())
 		}
+		dim := api.Group("/dim", middlewares.CheckAPIKey())
+		{
+			dim.GET("/department", controllers.GetDimDepartment, middlewares.Auth())
+			dim.GET("/position", controllers.GetDimPosition, middlewares.Auth())
+			dim.GET("/employee", controllers.GetDimEmployee, middlewares.Auth())
+			dim.GET("/manager", controllers.GetDimManager, middlewares.Auth())
+			dim.GET("/performance", controllers.GetDimPerformance, middlewares.Auth())
+			dim.GET("/employment-status", controllers.GetDimEmploymentStatus, middlewares.Auth())
+			dim.GET("/marital-status", controllers.GetDimMaritalStatus, middlewares.Auth())
+		}
+
 	}
 	log.Printf("Server started...")
 }

@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"hris-datawarehouse/app/reqres"
 	"hris-datawarehouse/config"
 	"math/rand"
 	"reflect"
@@ -237,4 +238,14 @@ func DecodeID(encodedID string) (response int) {
 	}
 
 	return
+}
+
+func ValidateSort(param *reqres.ReqPaging, validSortFields map[string]bool, defaultSort string) {
+	if !validSortFields[param.Sort] {
+		param.Sort = defaultSort
+	}
+	if param.Order != "ASC" && param.Order != "DESC" {
+		param.Order = "ASC"
+	}
+	param.Offset = (param.Page - 1) * param.Limit
 }

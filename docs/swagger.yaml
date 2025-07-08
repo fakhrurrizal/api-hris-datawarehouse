@@ -41,14 +41,244 @@ paths:
       summary: SignIn
       tags:
       - Auth
-  /v1/dashboard/score-card:
+  /v1/dashboard/average-performance-score-per-department:
     get:
-      description: Get Dashboard Score Card
+      description: Get Dashboard Average Performance Score Per Department with Employee
+        Count
       parameters:
       - description: department_id (int)
         in: query
         name: department_id
         type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Average Performance Score Per Department with Count
+      tags:
+      - PerformanceAnalysis
+  /v1/dashboard/barchart-average-emp-satisfaction-per-position:
+    get:
+      description: Get Dashboard Bar Chart Average Employee Satisfaction Per Position
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Average Employee Satisfaction Per Position
+      tags:
+      - PerformanceAnalysis
+  /v1/dashboard/barchart-average-salary-per-department:
+    get:
+      description: Get SalaryDistribution Bar Chart Average Salary Per Department
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get SalaryDistribution Bar Chart Average Salary Per Department
+      tags:
+      - SalaryDistribution
+  /v1/dashboard/barchart-average-salary-per-position:
+    get:
+      description: Get SalaryDistribution Bar Chart Average Salary Per Position with
+        Employee Count
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get SalaryDistribution Bar Chart Average Salary Per Position with Employee
+        Count
+      tags:
+      - SalaryDistribution
+  /v1/dashboard/barchart-employee-per-citizen-desc:
+    get:
+      description: Get Dashboard Bar Chart Per Citizen Description
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Per Citizen Description
+      tags:
+      - Dashboard
+  /v1/dashboard/barchart-employee-per-department:
+    get:
+      description: Get Dashboard Bar Chart Per Department
+      parameters:
       - description: gender (string) (m/f)
         in: query
         name: gender
@@ -81,9 +311,619 @@ paths:
       security:
       - ApiKeyAuth: []
       - JwtToken: []
+      summary: Get Dashboard Bar Chart Per Department
+      tags:
+      - Dashboard
+  /v1/dashboard/barchart-employee-per-gender:
+    get:
+      description: Get Dashboard Bar Chart Per Department
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Per Department
+      tags:
+      - Dashboard
+  /v1/dashboard/barchart-employee-per-race-desc:
+    get:
+      description: Get Dashboard Bar Chart Per Race Description
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Per Race Description
+      tags:
+      - Dashboard
+  /v1/dashboard/barchart-employee-per-recruitment-source:
+    get:
+      description: Get Dashboard Bar Chart Per Recruitment Source
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Per Recruitment Source
+      tags:
+      - Dashboard
+  /v1/dashboard/barchart-employee-termination-by-department:
+    get:
+      description: Get Dashboard Bar Chart Employee Termination By Department
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Employee Termination By Department
+      tags:
+      - TerminationAnalysis
+  /v1/dashboard/barchart-employee-termination-by-reason:
+    get:
+      description: Get Dashboard Bar Chart Employee Termination By Reason
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Employee Termination By Reason
+      tags:
+      - TerminationAnalysis
+  /v1/dashboard/highest-lowest-salary:
+    get:
+      description: Get Dashboard Highest and Lowest Salary
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Highest and Lowest Salary
+      tags:
+      - SalaryDistribution
+  /v1/dashboard/piechart-employee-termination-ratio:
+    get:
+      description: Get Dashboard Pie Chart Employee Termination Ratio (Voluntarily
+        vs Terminated for Cause)
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Pie Chart Employee Termination Ratio
+      tags:
+      - TerminationAnalysis
+  /v1/dashboard/score-card:
+    get:
+      description: Get Dashboard Score Card
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: gender (string) (m/f)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: manager_id (int)
+        in: query
+        name: manager_id
+        type: integer
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
       summary: Get Dashboard Score Card
       tags:
       - Dashboard
+  /v1/dim/department:
+    get:
+      description: Get All Department With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: id)'
+        in: query
+        name: order
+        type: string
+      - description: 'created_at_margin_top (format: 2006-01-02)'
+        in: query
+        name: created_at_margin_top
+        type: string
+      - description: 'created_at_margin_top (format: 2006-01-02)'
+        in: query
+        name: created_at_margin_bottom
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Department With Pagination
+      tags:
+      - Dim Table
+  /v1/dim/employee:
+    get:
+      description: Get All Employees With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: EmpID)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Employees With Pagination
+      tags:
+      - Dim Table
+  /v1/dim/employment-status:
+    get:
+      description: Get All Employment Statuses With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: EmpStatusID)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Employment Statuses With Pagination
+      tags:
+      - Dim Table
+  /v1/dim/manager:
+    get:
+      description: Get All Managers With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: ManagerID)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Managers With Pagination
+      tags:
+      - Dim Table
+  /v1/dim/marital-status:
+    get:
+      description: Get All Marital Statuses With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: MaritalStatusID)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Marital Statuses With Pagination
+      tags:
+      - Dim Table
+  /v1/dim/performance:
+    get:
+      description: Get All Performance Scores With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: PerfScoreID)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Performance Scores With Pagination
+      tags:
+      - Dim Table
+  /v1/dim/position:
+    get:
+      description: Get All Positions With Pagination
+      parameters:
+      - description: search (string)
+        in: query
+        name: search
+        type: string
+      - description: page (int)
+        in: query
+        name: page
+        type: integer
+      - description: limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'order by (default: PositionID)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Positions With Pagination
+      tags:
+      - Dim Table
   /version:
     get:
       consumes:

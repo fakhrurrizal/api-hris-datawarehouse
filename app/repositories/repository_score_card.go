@@ -7,12 +7,12 @@ import (
 
 func buildFilterQuery() string {
 	return `
-		AND (? = 0 OR DeptID = ?)
-		AND (? = '' OR Gender = ?)
-		AND (? = 0 OR EmpStatusID = ?)
-		AND (? = 0 OR ManagerID = ?)
-		AND (? = 0 OR PositionID = ?)
-		AND (? = '' OR State = ?)
+		AND (? = 0 OR e.DeptID = ?)
+		AND (? = '' OR e.Gender = ?)
+		AND (? = 0 OR e.EmpStatusID = ?)
+		AND (? = 0 OR d.ManagerID = ?)
+		AND (? = 0 OR e.PositionID = ?)
+		AND (? = '' OR e.State = ?)
 	`
 }
 func GetTotalActiveEmployees(
@@ -117,7 +117,6 @@ func GetTurnoverRate(
 	err = config.DB.Raw(finalQuery, args...).Scan(&percentage).Error
 	return
 }
-
 
 func GetAveragePerformanceScore(
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
