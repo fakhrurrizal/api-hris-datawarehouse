@@ -102,12 +102,13 @@ func GetDashboardPieChartEmployeeTerminationRatio(c echo.Context) error {
 	Gender := c.QueryParam("gender")
 	EmpStatusID, _ := strconv.Atoi(c.QueryParam("emp_status_id"))
 	PositionID, _ := strconv.Atoi(c.QueryParam("position_id"))
+	managerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
 	DepartmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
 	startDate := c.QueryParam("start_date")
 	endDate := c.QueryParam("end_date")
 
 	startDate, endDate = CheckDate(startDate, endDate)
-	data, err := repository.GetEmployeeTerminationRatio(startDate, endDate, EmpStatusID, 0, PositionID, DepartmentID, State, Gender)
+	data, err := repository.GetEmployeeTerminationRatio(startDate, endDate, EmpStatusID, managerID, PositionID, DepartmentID, State, Gender)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
