@@ -4,6 +4,11 @@ import (
 	"hris-datawarehouse/config"
 )
 
+type TerminationRatio struct {
+	Label string `json:"label"`
+	Total int    `json:"total"`
+}
+
 func GetEmployeeTerminationByReason(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
@@ -84,24 +89,46 @@ func GetEmployeeTerminationByDepartment(
 	return
 }
 
+type EmpRatio struct {
+	Name  string `json:"name"`
+	Total int    `json:"total"`
+}
+
 func GetEmployeeTerminationRatio(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
 	state, gender string,
-) (result []PerformanceScoreCount, err error) {
+) (result []EmpRatio, err error) {
 	query := `
 		SELECT 
-			CASE 
-				WHEN e.TermReason = 'Voluntarily Terminated' THEN 'Voluntarily Terminated'
-				WHEN e.TermReason = 'Terminated for Cause' THEN 'Terminated for Cause'
-				ELSE 'Other'
-			END AS name,
+			sub.termination_label AS name, 
 			COUNT(*) AS total
-		FROM dim_employee e
-		WHERE e.DateofTermination IS NOT NULL
-		AND e.TermReason IS NOT NULL
-		AND e.TermReason != ''
+		FROM (
+			SELECT 
+				CASE 
+					WHEN LOWER(e.TermReason) LIKE '%career change%'
+						OR LOWER(e.TermReason) LIKE '%relocation%'
+						OR LOWER(e.TermReason) LIKE '%return to school%'
+						OR LOWER(e.TermReason) LIKE '%more money%'
+						OR LOWER(e.TermReason) LIKE '%unhappy%'
+						OR LOWER(e.TermReason) LIKE '%maternity%'
+						OR LOWER(e.TermReason) LIKE '%retiring%'
+					THEN 'Voluntarily Terminated'
+
+					WHEN LOWER(e.TermReason) LIKE '%gross misconduct%'
+						OR LOWER(e.TermReason) LIKE '%no-call%'
+						OR LOWER(e.TermReason) LIKE '%performance%'
+						OR LOWER(e.TermReason) LIKE '%attendance%'
+					THEN 'Terminated for Cause'
+
+					ELSE 'Other'
+				END AS termination_label
+			FROM dim_employee e
+			WHERE e.DateofTermination IS NOT NULL
+				AND e.TermReason IS NOT NULL
+				AND TRIM(e.TermReason) != ''
 	`
+
 	var args []interface{}
 
 	if startDate != "" && endDate != "" {
@@ -110,19 +137,13 @@ func GetEmployeeTerminationRatio(
 	}
 
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR e.PositionID = ?)
-		AND (? = '' OR e.State = ?)
-		AND (? = '' OR e.Gender = ?)
-	`
-	query += `
-		GROUP BY 
-			CASE 
-				WHEN e.TermReason = 'Voluntarily Terminated' THEN 'Voluntarily Terminated'
-				WHEN e.TermReason = 'Terminated for Cause' THEN 'Terminated for Cause'
-				ELSE 'Other'
-			END
+			AND (? = 0 OR e.DeptID = ?)
+			AND (? = 0 OR e.EmpStatusID = ?)
+			AND (? = 0 OR e.PositionID = ?)
+			AND (? = '' OR e.State = ?)
+			AND (? = '' OR e.Gender = ?)
+		) AS sub
+		GROUP BY sub.termination_label
 		ORDER BY total DESC
 	`
 
