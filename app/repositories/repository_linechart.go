@@ -70,7 +70,11 @@ func GetPerformanceTrend(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
 	state, periodType string,
-) (result []LineChartData, err error) {
+) (result []struct {
+	X     string `json:"x"`     // periode (tahun/bulan)
+	Y     int    `json:"y"`     // jumlah karyawan
+	Label string `json:"label"` // nama skor performa
+}, err error) {
 	var dateColumn string
 
 	if periodType == "year" {
@@ -80,7 +84,10 @@ func GetPerformanceTrend(
 	}
 
 	query := fmt.Sprintf(`
-		SELECT %s AS x, AVG(p.PerformanceScore) AS y, 'Performance Score' AS label
+		SELECT 
+			%s AS x,
+			COUNT(*) AS y,
+			p.PerformanceScore AS label
 		FROM dim_employee e
 		INNER JOIN dim_department d ON e.DeptID = d.DeptID
 		INNER JOIN dim_performance p ON e.PerfScoreID = p.PerfScoreID
@@ -103,7 +110,7 @@ func GetPerformanceTrend(
 		AND (? = '' OR e.State = ?)
 	`
 
-	query += fmt.Sprintf(" GROUP BY %s ORDER BY x", dateColumn)
+	query += fmt.Sprintf(" GROUP BY %s, p.PerformanceScore ORDER BY x", dateColumn)
 
 	args = append(args,
 		deptID, deptID,
@@ -117,7 +124,6 @@ func GetPerformanceTrend(
 	return
 }
 
-// GetTurnoverTrend - Tren Turnover
 func GetTurnoverTrend(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
