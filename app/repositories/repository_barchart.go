@@ -7,45 +7,64 @@ type GlobalCount struct {
 	Total int    `json:"total"`
 }
 
+func buildFilterQueryForGroup(
+	empStatusID, managerID, positionID, deptID int,
+	state, gender string,
+) (string, []interface{}) {
+	var filter string
+	var args []interface{}
+
+	if deptID != 0 {
+		filter += " AND f.DeptID = ?"
+		args = append(args, deptID)
+	}
+	if empStatusID != 0 {
+		filter += " AND f.EmpStatusID = ?"
+		args = append(args, empStatusID)
+	}
+	if managerID != 0 {
+		filter += " AND f.ManagerID = ?"
+		args = append(args, managerID)
+	}
+	if positionID != 0 {
+		filter += " AND f.PositionID = ?"
+		args = append(args, positionID)
+	}
+	if state != "" {
+		filter += " AND e.State = ?"
+		args = append(args, state)
+	}
+	if gender != "" {
+		filter += " AND e.Gender = ?"
+		args = append(args, gender)
+	}
+	return filter, args
+}
+
 func GetEmployeeCountPerDepartment(
 	startDate, endDate string,
 	empStatusID, managerID, positionID int,
 	state, gender string,
 ) (result []GlobalCount, err error) {
 	query := `
-		SELECT d.Department AS name, COUNT(e.EmpID) AS total
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NULL
+		SELECT d.Department AS name, COUNT(DISTINCT f.EmpID) AS total
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofTermination IS NULL
 	`
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
 
-	// Add filter conditions directly
-	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = '' OR e.Gender = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
-		AND (? = '' OR e.State = ?)
-	`
+	filter, filterArgs := buildFilterQueryForGroup(empStatusID, managerID, positionID, 0, state, gender)
+	query += filter
 
-	query += " GROUP BY e.DeptID, d.Department ORDER BY total DESC"
-
-	args = append(args,
-		0, 0,
-		gender, gender,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-	)
+	query += " GROUP BY f.DeptID, d.Department ORDER BY total DESC"
+	args = append(args, filterArgs...)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
@@ -57,41 +76,28 @@ func GetEmployeeCountPerGender(
 	state string,
 ) (result []GlobalCount, err error) {
 	query := `
-		SELECT e.Gender AS name, COUNT(e.EmpID) AS total
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NULL
+		SELECT e.Gender AS name, COUNT(DISTINCT f.EmpID) AS total
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofTermination IS NULL
 	`
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
 
-	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
-		AND (? = '' OR e.State = ?)
-	`
+	filter, filterArgs := buildFilterQueryForGroup(empStatusID, managerID, positionID, deptID, state, "")
+	query += filter
 
 	query += " GROUP BY e.Gender ORDER BY total DESC"
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-	)
+	args = append(args, filterArgs...)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }
-
 
 func GetEmployeeCountPerRecruitmentSource(
 	startDate, endDate string,
@@ -99,118 +105,82 @@ func GetEmployeeCountPerRecruitmentSource(
 	state, gender string,
 ) (result []GlobalCount, err error) {
 	query := `
-		SELECT e.RecruitmentSource AS name, COUNT(e.EmpID) AS total
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NULL
+		SELECT f.RecruitmentSource AS name, COUNT(DISTINCT f.EmpID) AS total
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.Is_Terminated = 0
 	`
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
 
-	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
-		AND (? = '' OR e.State = ?)
-		AND (? = '' OR e.Gender = ?)
-	`
+	filter, filterArgs := buildFilterQueryForGroup(empStatusID, managerID, positionID, deptID, state, gender)
+	query += filter
 
-	query += " GROUP BY e.RecruitmentSource ORDER BY total DESC"
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-		gender, gender,
-	)
+	query += " GROUP BY f.RecruitmentSource ORDER BY total DESC"
+	args = append(args, filterArgs...)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }
+
 func GetEmployeeCountPerCitizenDesc(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
 	state, gender string,
 ) (result []GlobalCount, err error) {
 	query := `
-		SELECT e.CitizenDesc AS name, COUNT(e.EmpID) AS total
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NULL
+		SELECT e.CitizenDesc AS name, COUNT(DISTINCT f.EmpID) AS total
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofTermination IS NULL
 	`
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
 
-	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
-		AND (? = '' OR e.State = ?)
-		AND (? = '' OR e.Gender = ?)
-	`
+	filter, filterArgs := buildFilterQueryForGroup(empStatusID, managerID, positionID, deptID, state, gender)
+	query += filter
 
 	query += " GROUP BY e.CitizenDesc ORDER BY total DESC"
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-		gender, gender,
-	)
+	args = append(args, filterArgs...)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }
-
 func GetEmployeeCountPerRaceDesc(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
 	state, gender string,
 ) (result []GlobalCount, err error) {
 	query := `
-		SELECT e.RaceDesc AS name, COUNT(e.EmpID) AS total
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NULL
+		SELECT e.RaceDesc AS name, COUNT(DISTINCT f.EmpID) AS total
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofTermination IS NULL
 	`
+
 	var args []interface{}
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
-	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
-		AND (? = '' OR e.State = ?)
-		AND (? = '' OR e.Gender = ?)
-	`
+
+	filter, filterArgs := buildFilterQueryForGroup(empStatusID, managerID, positionID, deptID, state, gender)
+	query += filter
+
 	query += " GROUP BY e.RaceDesc ORDER BY total DESC"
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-		gender, gender,
-	)
+	args = append(args, filterArgs...)
+
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }

@@ -23,30 +23,31 @@ func GetAveragePerformanceScorePerDepartmentWithCount(
 	query := `
 		SELECT 
 			d.Department AS name, 
-			COUNT(e.EmpID) AS count
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		INNER JOIN dim_performance p ON e.PerfScoreID = p.PerfScoreID
-		WHERE e.DateofTermination IS NULL
-		AND p.PerformanceScore IS NOT NULL
+			COUNT(f.EmpID) AS count
+		FROM fact_employment f
+		INNER JOIN dim_employee e ON f.EmpID = e.EmpID
+		INNER JOIN dim_department d ON f.DeptID = d.DeptID
+		INNER JOIN dim_performance p ON f.PerfScoreID = p.PerfScoreID
+		WHERE f.Is_Terminated = 0
+		AND f.PerfScoreID IS NOT NULL
 	`
 
 	var args []interface{}
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
 
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
 		AND (? = '' OR e.State = ?)
 		AND (? = '' OR e.Gender = ?)
 	`
 
-	query += " GROUP BY d.Department, d.DeptID ORDER BY count DESC"
+	query += " GROUP BY d.Department, f.DeptID ORDER BY count DESC"
 
 	args = append(args,
 		deptID, deptID,
@@ -67,26 +68,32 @@ func GetAverageEmpSatisfactionPerPositionRounded(
 	state, gender string,
 ) (result []PerformanceScoreCount, err error) {
 	query := `
-		SELECT pos.Position AS name, ROUND(AVG(e.EmpSatisfaction), 2) AS total
-		FROM dim_employee e
-		INNER JOIN dim_position pos ON e.PositionID = pos.PositionID
-		WHERE e.DateofTermination IS NULL
-		AND e.EmpSatisfaction IS NOT NULL
-		AND e.EmpSatisfaction > 0
+		SELECT pos.Position AS name, ROUND(AVG(p.EmpSatisfaction), 2) AS total
+		FROM fact_employment f
+		INNER JOIN dim_employee e ON f.EmpID = e.EmpID
+		INNER JOIN dim_position pos ON f.PositionID = pos.PositionID
+		INNER JOIN dim_performance p ON f.PerfScoreID = p.PerfScoreID
+		WHERE f.Is_Terminated = 0
+		AND p.EmpSatisfaction IS NOT NULL
+		AND p.EmpSatisfaction > 0
 	`
+
 	var args []interface{}
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
+
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR e.PositionID = ?)
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.PositionID = ?)
 		AND (? = '' OR e.State = ?)
 		AND (? = '' OR e.Gender = ?)
 	`
-	query += " GROUP BY pos.Position, pos.PositionID ORDER BY total DESC"
+
+	query += " GROUP BY pos.Position, f.PositionID ORDER BY total DESC"
+
 	args = append(args,
 		deptID, deptID,
 		empStatusID, empStatusID,
@@ -94,6 +101,7 @@ func GetAverageEmpSatisfactionPerPositionRounded(
 		state, state,
 		gender, gender,
 	)
+
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }

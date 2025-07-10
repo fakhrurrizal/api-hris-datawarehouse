@@ -5,16 +5,10 @@ import (
 	"hris-datawarehouse/config"
 )
 
-// Repository untuk Line Chart Dashboard
-
 type LineChartData struct {
 	X     string  `json:"x"`
 	Y     float64 `json:"y"`
 	Label string  `json:"label,omitempty"`
-}
-
-type LineChartResponse struct {
-	Data []LineChartData `json:"data"`
 }
 
 func GetRecruitmentTrend(
@@ -23,44 +17,34 @@ func GetRecruitmentTrend(
 	state, periodType string,
 ) (result []LineChartData, err error) {
 	var dateColumn string
-
 	if periodType == "year" {
-		dateColumn = "YEAR(e.DateofHire)"
+		dateColumn = "YEAR(f.DateofHire)"
 	} else {
-		dateColumn = "DATE_FORMAT(e.DateofHire, '%Y-%m')"
+		dateColumn = "DATE_FORMAT(f.DateofHire, '%Y-%m')"
 	}
 
 	query := fmt.Sprintf(`
-		SELECT %s AS x, COUNT(e.EmpID) AS y, 'Recruitment' AS label
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofHire IS NOT NULL
+		SELECT %s AS x, COUNT(DISTINCT f.EmpID) AS y, 'Recruitment' AS label
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofHire IS NOT NULL AND f.Is_Terminated = 0
 	`, dateColumn)
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
-
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
 		AND (? = '' OR e.State = ?)
 	`
-
 	query += fmt.Sprintf(" GROUP BY %s ORDER BY x", dateColumn)
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-	)
+	args = append(args, deptID, deptID, empStatusID, empStatusID, managerID, managerID, positionID, positionID, state, state)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
@@ -71,54 +55,40 @@ func GetPerformanceTrend(
 	empStatusID, managerID, positionID, deptID int,
 	state, periodType string,
 ) (result []struct {
-	X     string `json:"x"`     // periode (tahun/bulan)
-	Y     int    `json:"y"`     // jumlah karyawan
-	Label string `json:"label"` // nama skor performa
+	X     string `json:"x"`
+	Y     int    `json:"y"`
+	Label string `json:"label"`
 }, err error) {
 	var dateColumn string
-
 	if periodType == "year" {
-		dateColumn = "YEAR(e.LastPerformanceReview_Date)"
+		dateColumn = "YEAR(f.DateofHire)"
 	} else {
-		dateColumn = "DATE_FORMAT(e.LastPerformanceReview_Date, '%Y-%m')"
+		dateColumn = "DATE_FORMAT(f.DateofHire, '%Y-%m')"
 	}
 
 	query := fmt.Sprintf(`
-		SELECT 
-			%s AS x,
-			COUNT(*) AS y,
-			p.PerformanceScore AS label
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		INNER JOIN dim_performance p ON e.PerfScoreID = p.PerfScoreID
-		WHERE e.LastPerformanceReview_Date IS NOT NULL
-		AND e.DateofTermination IS NULL
+		SELECT %s AS x, COUNT(*) AS y, p.PerformanceScore AS label
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		JOIN dim_performance p ON f.PerfScoreID = p.PerfScoreID
+		WHERE f.PerfScoreID IS NOT NULL AND f.Is_Terminated = 0
 	`, dateColumn)
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.LastPerformanceReview_Date BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
-
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
 		AND (? = '' OR e.State = ?)
 	`
-
 	query += fmt.Sprintf(" GROUP BY %s, p.PerformanceScore ORDER BY x", dateColumn)
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-	)
+	args = append(args, deptID, deptID, empStatusID, empStatusID, managerID, managerID, positionID, positionID, state, state)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
@@ -130,110 +100,86 @@ func GetTurnoverTrend(
 	state, periodType string,
 ) (result []LineChartData, err error) {
 	var dateColumn string
-
 	if periodType == "year" {
-		dateColumn = "YEAR(e.DateofTermination)"
+		dateColumn = "YEAR(f.DateofTermination)"
 	} else {
-		dateColumn = "DATE_FORMAT(e.DateofTermination, '%Y-%m')"
+		dateColumn = "DATE_FORMAT(f.DateofTermination, '%Y-%m')"
 	}
 
 	query := fmt.Sprintf(`
-		SELECT %s AS x, COUNT(e.EmpID) AS y, 'Turnover' AS label
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NOT NULL
+		SELECT %s AS x, COUNT(DISTINCT f.EmpID) AS y, 'Turnover' AS label
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofTermination IS NOT NULL
 	`, dateColumn)
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofTermination BETWEEN ? AND ?"
+		query += " AND f.DateofTermination BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
-
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
 		AND (? = '' OR e.State = ?)
 	`
-
 	query += fmt.Sprintf(" GROUP BY %s ORDER BY x", dateColumn)
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-	)
+	args = append(args, deptID, deptID, empStatusID, empStatusID, managerID, managerID, positionID, positionID, state, state)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }
 
-// GetLateAbsenceTrend - Tren Late/Absence
 func GetLateAbsenceTrend(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
 	state, periodType, trendType string,
 ) (result []LineChartData, err error) {
 	var dateColumn string
-
 	if periodType == "year" {
-		dateColumn = "YEAR(e.DateofHire)"
+		dateColumn = "YEAR(f.DateofHire)"
 	} else {
-		dateColumn = "DATE_FORMAT(e.DateofHire, '%Y-%m')"
+		dateColumn = "DATE_FORMAT(f.DateofHire, '%Y-%m')"
 	}
 
-	var selectClause string
-	var label string
-
+	var selectClause, label string
 	switch trendType {
 	case "late":
-		selectClause = "AVG(e.DaysLateLast30) AS y"
+		selectClause = "AVG(f.DaysLateLast30) AS y"
 		label = "Average Days Late"
 	case "absence":
-		selectClause = "AVG(e.Absences) AS y"
+		selectClause = "AVG(f.Absences) AS y"
 		label = "Average Absences"
-	default: // both
-		selectClause = "AVG(e.DaysLateLast30 + e.Absences) AS y"
+	default:
+		selectClause = "AVG(f.DaysLateLast30 + f.Absences) AS y"
 		label = "Average Late + Absences"
 	}
 
 	query := fmt.Sprintf(`
 		SELECT %s AS x, %s, '%s' AS label
-		FROM dim_employee e
-		INNER JOIN dim_department d ON e.DeptID = d.DeptID
-		WHERE e.DateofTermination IS NULL
-		AND e.DateofHire IS NOT NULL
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.Is_Terminated = 0 AND f.DateofHire IS NOT NULL
 	`, dateColumn, selectClause, label)
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
-		query += " AND e.DateofHire BETWEEN ? AND ?"
+		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
 	}
-
 	query += `
-		AND (? = 0 OR e.DeptID = ?)
-		AND (? = 0 OR e.EmpStatusID = ?)
-		AND (? = 0 OR d.ManagerID = ?)
-		AND (? = 0 OR e.PositionID = ?)
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
 		AND (? = '' OR e.State = ?)
 	`
-
 	query += fmt.Sprintf(" GROUP BY %s ORDER BY x", dateColumn)
-
-	args = append(args,
-		deptID, deptID,
-		empStatusID, empStatusID,
-		managerID, managerID,
-		positionID, positionID,
-		state, state,
-	)
+	args = append(args, deptID, deptID, empStatusID, empStatusID, managerID, managerID, positionID, positionID, state, state)
 
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
