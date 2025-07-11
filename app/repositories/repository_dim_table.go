@@ -258,3 +258,80 @@ func GetPositions(param reqres.ReqPaging) (data reqres.ResPaging, err error) {
 	data = utils.PopulateResPaging(&param, responses, total, total, null.Time{})
 	return
 }
+
+func GetEmploymentWithFilters(param reqres.ReqPaging) (data reqres.ResPaging, err error) {
+	var responses []models.EmploymentResponse
+	where := "1=1"
+	var args []interface{}
+
+	if param.Search != "" {
+		where += " AND e.Employee_Name ILIKE ?"
+		args = append(args, "%"+param.Search+"%")
+	}
+
+	// Hitung total data
+	var total int64
+	countQuery := fmt.Sprintf(`
+		SELECT COUNT(*)
+		FROM fact_employment f
+		JOIN dim_employee e ON f.EmpID = e.EmpID
+		JOIN dim_department d ON f.DeptID = d.DeptID
+		JOIN dim_position p ON f.PositionID = p.PositionID
+		LEFT JOIN dim_manager m ON f.ManagerID = m.ManagerID
+		WHERE %s
+	`, where)
+
+	err = config.DB.Raw(countQuery, args...).Scan(&total).Error
+	if err != nil {
+		return
+	}
+
+	utils.ValidateSort(&param, map[string]bool{
+		"e.Employee_Name": true,
+		"p.Position":      true,
+		"d.Department":    true,
+		"f.DateofHire":    true,
+		"f.Salary":        true,
+	}, "e.Employee_Name")
+
+	dataQuery := fmt.Sprintf(`
+		SELECT 
+			f.EmpID,
+			e.Employee_Name AS employee_name,
+			p.Position,
+			d.Department,
+			COALESCE(m.ManagerName, '-') AS ManagerName,
+			DATE_FORMAT(f.DateofHire, '%%Y-%%m-%%d') AS DateOfHire,
+			DATE_FORMAT(f.DateofTermination, '%%Y-%%m-%%d') AS DateOfTermination,
+			f.TermReason,
+			f.Salary,
+			e.Gender,
+			e.State,
+			e.Zip,
+			e.CitizenDesc,
+			e.HispanicLatino,
+			e.RaceDesc,
+			f.Tenure_Days,
+			f.DaysLateLast30,
+			f.Absences,
+			f.RecruitmentSource
+		FROM fact_employment f
+		JOIN dim_employee e ON f.EmpID = e.EmpID
+		JOIN dim_department d ON f.DeptID = d.DeptID
+		JOIN dim_position p ON f.PositionID = p.PositionID
+		LEFT JOIN dim_manager m ON f.ManagerID = m.ManagerID
+		WHERE %s
+		ORDER BY %s %s
+		LIMIT ? OFFSET ?
+	`, where, param.Sort, param.Order)
+
+	args = append(args, param.Limit, param.Offset)
+
+	err = config.DB.Raw(dataQuery, args...).Scan(&responses).Error
+	if err != nil {
+		return
+	}
+
+	data = utils.PopulateResPaging(&param, responses, total, total, null.Time{})
+	return
+}

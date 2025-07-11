@@ -61,3 +61,25 @@ type DimPosition struct {
 	PositionID int    `json:"position_id" db:"PositionID"`
 	Position   string `json:"position" db:"Position"`
 }
+
+type EmploymentResponse struct {
+	EmpID              int     `json:"emp_id"`
+	EmployeeName       string  `json:"employee_name"`
+	Position           string  `json:"position"`
+	Department         string  `json:"department"`
+	ManagerName        string  `json:"manager_name"`
+	DateOfHire         string  `json:"date_of_hire"`
+	DateOfTermination  *string `json:"date_of_termination,omitempty"`
+	TermReason         *string `json:"term_reason,omitempty"`
+	Salary             float64 `json:"salary"`
+	Gender             string  `json:"gender"`
+	State              string  `json:"state"`
+	Zip                string  `json:"zip"`
+	CitizenDesc        string  `json:"citizen_desc"`
+	HispanicLatino     string  `json:"hispanic_latino"`
+	RaceDesc           string  `json:"race_desc"`
+	TenureDays         int     `json:"tenure_days"`
+	DaysLateLast30     int     `json:"days_late_last_30"`
+	Absences           int     `json:"absences"`
+	RecruitmentSource  string  `json:"recruitment_source"`
+}

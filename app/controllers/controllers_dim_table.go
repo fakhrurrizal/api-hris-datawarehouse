@@ -4,9 +4,27 @@ import (
 	repository "hris-datawarehouse/app/repositories"
 	"hris-datawarehouse/app/utils"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
+
+type EmploymentPagingResponse struct {
+	Page  int                  `json:"page"`
+	Limit int                  `json:"limit"`
+	Total int64                `json:"total"`
+	Data  []EmploymentResponse `json:"data"`
+}
+
+type EmploymentResponse struct {
+	EmpID        int     `json:"emp_id"`
+	EmployeeName string  `json:"employee_name"`
+	Position     string  `json:"position"`
+	Department   string  `json:"department"`
+	Manager      string  `json:"manager"`
+	Salary       float64 `json:"salary"`
+	DateOfHire   string  `json:"date_of_hire"`
+}
 
 // GetDimDepartment godoc
 // @Summary Get All Department With Pagination
@@ -202,6 +220,63 @@ func GetDimPosition(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "Failed to get positions",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+// GetEmploymentWithFilters godoc
+// @Summary Get All Employment Data With Filters
+// @Description Get Employment Data with Filters and Pagination
+// @Tags Fact Table
+// @Param search query string false "Search by Employee Name"
+// @Param gender query string false "Gender"
+// @Param state query string false "State"
+// @Param department_id query integer false "Department ID"
+// @Param position_id query integer false "Position ID"
+// @Param emp_status_id query integer false "Employee Status ID"
+// @Param manager_id query integer false "Manager ID"
+// @Param start_date query string false "Start Date (YYYY-MM-DD)"
+// @Param end_date query string false "End Date (YYYY-MM-DD)"
+// @Param page query integer false "Page (int)"
+// @Param limit query integer false "Limit (int)"
+// @Param sort query string false "Sort (ASC/DESC)"
+// @Param order query string false "Order by field (default: e.Employee_Name)"
+// @Produce json
+// @Success 200
+// @Router /v1/dim/fact-employment [get]
+// @Security ApiKeyAuth
+// @Security JwtToken
+func GetEmploymentWithFilters(c echo.Context) error {
+	param := utils.PopulatePaging(c, "e.EmployeeName")
+
+	gender := c.QueryParam("gender")
+	state := c.QueryParam("state")
+	startDate := c.QueryParam("start_date")
+	endDate := c.QueryParam("end_date")
+
+	departmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
+	positionID, _ := strconv.Atoi(c.QueryParam("position_id"))
+	empStatusID, _ := strconv.Atoi(c.QueryParam("emp_status_id"))
+	managerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
+
+	param.Custom = map[string]interface{}{
+		"gender":        gender,
+		"state":         state,
+		"start_date":    startDate,
+		"end_date":      endDate,
+		"department_id": departmentID,
+		"position_id":   positionID,
+		"emp_status_id": empStatusID,
+		"manager_id":    managerID,
+	}
+
+	data, err := repository.GetEmploymentWithFilters(param)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "Failed to get employment data",
 			"error":   err.Error(),
 		})
 	}

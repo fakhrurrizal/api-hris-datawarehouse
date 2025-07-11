@@ -1782,6 +1782,111 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/dim/fact-employment": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Get Employment Data with Filters and Pagination",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fact Table"
+                ],
+                "summary": "Get All Employment Data With Filters",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search by Employee Name",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Gender",
+                        "name": "gender",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "State",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Department ID",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Position ID",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Employee Status ID",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Manager ID",
+                        "name": "manager_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start Date (YYYY-MM-DD)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (YYYY-MM-DD)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page (int)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit (int)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort (ASC/DESC)",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order by field (default: e.Employee_Name)",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/v1/dim/manager": {
             "get": {
                 "security": [

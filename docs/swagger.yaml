@@ -1123,6 +1123,73 @@ paths:
       summary: Get All Employment Statuses With Pagination
       tags:
       - Dim Table
+  /v1/dim/fact-employment:
+    get:
+      description: Get Employment Data with Filters and Pagination
+      parameters:
+      - description: Search by Employee Name
+        in: query
+        name: search
+        type: string
+      - description: Gender
+        in: query
+        name: gender
+        type: string
+      - description: State
+        in: query
+        name: state
+        type: string
+      - description: Department ID
+        in: query
+        name: department_id
+        type: integer
+      - description: Position ID
+        in: query
+        name: position_id
+        type: integer
+      - description: Employee Status ID
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: Manager ID
+        in: query
+        name: manager_id
+        type: integer
+      - description: Start Date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: End Date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      - description: Page (int)
+        in: query
+        name: page
+        type: integer
+      - description: Limit (int)
+        in: query
+        name: limit
+        type: integer
+      - description: Sort (ASC/DESC)
+        in: query
+        name: sort
+        type: string
+      - description: 'Order by field (default: e.Employee_Name)'
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get All Employment Data With Filters
+      tags:
+      - Fact Table
   /v1/dim/manager:
     get:
       description: Get All Managers With Pagination

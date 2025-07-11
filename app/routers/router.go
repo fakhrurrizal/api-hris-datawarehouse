@@ -82,6 +82,7 @@ func Init(app *echo.Echo) {
 			dim.GET("/performance", controllers.GetDimPerformance, middlewares.Auth())
 			dim.GET("/employment-status", controllers.GetDimEmploymentStatus, middlewares.Auth())
 			dim.GET("/marital-status", controllers.GetDimMaritalStatus, middlewares.Auth())
+			dim.GET("/fact-employment", controllers.GetEmploymentWithFilters, middlewares.Auth())
 		}
 
 	}
