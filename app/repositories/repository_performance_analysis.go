@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"hris-datawarehouse/config"
 )
 
@@ -68,13 +69,16 @@ func GetSatisfactionHeatmapByPosition(
 	state, gender string,
 ) (result []struct {
 	X     string  `json:"x"`     // Posisi
-	Y     string  `json:"y"`     // Kategori tetap, misalnya "EmpSatisfaction"
+	Y     string  `json:"y"`     // Tahun-Bulan
 	Value float64 `json:"value"` // Rata-rata EmpSatisfaction
 }, err error) {
-	query := `
+
+	dateFormat := "DATE_FORMAT(f.DateofHire, '%Y-%m')"
+
+	query := fmt.Sprintf(`
 		SELECT 
 			pos.Position AS x, 
-			'Satisfaction' AS y, 
+			%s AS y, 
 			ROUND(AVG(p.EmpSatisfaction), 2) AS value
 		FROM fact_employment f
 		INNER JOIN dim_employee e ON f.EmpID = e.EmpID
@@ -83,10 +87,9 @@ func GetSatisfactionHeatmapByPosition(
 		WHERE f.Is_Terminated = 0
 			AND p.EmpSatisfaction IS NOT NULL
 			AND p.EmpSatisfaction > 0
-	`
+	`, dateFormat)
 
 	var args []interface{}
-
 	if startDate != "" && endDate != "" {
 		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
@@ -100,7 +103,7 @@ func GetSatisfactionHeatmapByPosition(
 		AND (? = '' OR e.Gender = ?)
 	`
 
-	query += ` GROUP BY pos.Position ORDER BY value DESC`
+	query += fmt.Sprintf(` GROUP BY pos.Position, %s ORDER BY %s ASC, pos.Position ASC`, dateFormat, dateFormat)
 
 	args = append(args,
 		deptID, deptID,
@@ -113,6 +116,7 @@ func GetSatisfactionHeatmapByPosition(
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }
+
 
 func GetEmployeeCountByMaritalStatus(
 	startDate, endDate string,
