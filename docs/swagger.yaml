@@ -547,6 +547,106 @@ paths:
       summary: Get Dashboard Bar Chart Employee Termination By Reason
       tags:
       - TerminationAnalysis
+  /v1/dashboard/employees-per-marital-status:
+    get:
+      description: Get jumlah karyawan berdasarkan status pernikahan
+      parameters:
+      - description: Department ID
+        in: query
+        name: department_id
+        type: integer
+      - description: Employee Status ID
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: Position ID
+        in: query
+        name: position_id
+        type: integer
+      - description: Manager ID
+        in: query
+        name: manager_id
+        type: integer
+      - description: Marital Status ID
+        in: query
+        name: marital_status_id
+        type: integer
+      - description: State
+        in: query
+        name: state
+        type: string
+      - description: 'Start Date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'End Date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Total Employees per Marital Status
+      tags:
+      - Dashboard
+  /v1/dashboard/heatmap-days-late:
+    get:
+      description: Heatmap keterlambatan masuk berdasarkan hari dan departemen
+      parameters:
+      - description: Department ID
+        in: query
+        name: department_id
+        type: integer
+      - description: Employee Status ID
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: Position ID
+        in: query
+        name: position_id
+        type: integer
+      - description: Manager ID
+        in: query
+        name: manager_id
+        type: integer
+      - description: State
+        in: query
+        name: state
+        type: string
+      - description: 'Start Date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'End Date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Heatmap Days Late per Department
+      tags:
+      - Dashboard
   /v1/dashboard/highest-lowest-salary:
     get:
       description: Get Dashboard Highest and Lowest Salary

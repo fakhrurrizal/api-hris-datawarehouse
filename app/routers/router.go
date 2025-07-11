@@ -68,8 +68,9 @@ func Init(app *echo.Echo) {
 			dashboard.GET("/linechart-performance-trend", controllers.GetDashboardLineChartPerformanceTrend, middlewares.Auth())
 			dashboard.GET("/linechart-turnover-trend", controllers.GetDashboardLineChartTurnoverTrend, middlewares.Auth())
 			dashboard.GET("/linechart-late-absence-trend", controllers.GetDashboardLineChartLateAbsenceTrend, middlewares.Auth())
-			dashboard.GET("/linechart-late-absence-trend", controllers.GetDashboardLineChartLateAbsenceTrend, middlewares.Auth())
 
+			dashboard.GET("/heatmap-days-late", controllers.GetMonthlyHeatmapLateByDepartment, middlewares.Auth())
+			dashboard.GET("/employees-per-marital-status", controllers.GetEmployeeByMaritalStatus, middlewares.Auth())
 		}
 		dim := api.Group("/dim", middlewares.CheckAPIKey())
 		{

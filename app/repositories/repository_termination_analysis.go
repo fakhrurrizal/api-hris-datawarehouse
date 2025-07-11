@@ -129,35 +129,31 @@ func GetEmployeeTerminationRatio(
 	state, gender string,
 ) (result []EmpRatio, err error) {
 	query := `
-		SELECT 
-			sub.termination_label AS name, 
-			COUNT(*) AS total
-		FROM (
-			SELECT 
-				CASE 
-					WHEN LOWER(f.TermReason) LIKE '%career change%'
-						OR LOWER(f.TermReason) LIKE '%relocation%'
-						OR LOWER(f.TermReason) LIKE '%return to school%'
-						OR LOWER(f.TermReason) LIKE '%more money%'
-						OR LOWER(f.TermReason) LIKE '%unhappy%'
-						OR LOWER(f.TermReason) LIKE '%maternity%'
-						OR LOWER(f.TermReason) LIKE '%retiring%'
-					THEN 'Voluntarily Terminated'
+	SELECT 
+		CASE 
+			WHEN LOWER(f.TermReason) LIKE '%career change%'
+				OR LOWER(f.TermReason) LIKE '%relocation%'
+				OR LOWER(f.TermReason) LIKE '%return to school%'
+				OR LOWER(f.TermReason) LIKE '%more money%'
+				OR LOWER(f.TermReason) LIKE '%unhappy%'
+				OR LOWER(f.TermReason) LIKE '%maternity%'
+				OR LOWER(f.TermReason) LIKE '%retiring%'
+			THEN 'Voluntarily Terminated'
 
-					WHEN LOWER(f.TermReason) LIKE '%gross misconduct%'
-						OR LOWER(f.TermReason) LIKE '%no-call%'
-						OR LOWER(f.TermReason) LIKE '%performance%'
-						OR LOWER(f.TermReason) LIKE '%attendance%'
-					THEN 'Terminated for Cause'
+			WHEN LOWER(f.TermReason) LIKE '%gross misconduct%'
+				OR LOWER(f.TermReason) LIKE '%no-call%'
+				OR LOWER(f.TermReason) LIKE '%performance%'
+				OR LOWER(f.TermReason) LIKE '%attendance%'
+			THEN 'Terminated for Cause'
+			ELSE NULL
+		END AS termination_label
+	FROM fact_employment f
+	JOIN dim_employee e ON f.EmpID = e.EmpID
+	WHERE f.Is_Terminated = 'Yes'
+		AND f.TermReason IS NOT NULL
+		AND TRIM(f.TermReason) != ''
+`
 
-					ELSE 'Other'
-				END AS termination_label
-			FROM fact_employment f
-			INNER JOIN dim_employee e ON f.EmpID = e.EmpID
-			WHERE f.Is_Terminated = 'Yes'
-			AND f.TermReason IS NOT NULL
-			AND TRIM(f.TermReason) != ''
-	`
 	var args []interface{}
 
 	if startDate != "" && endDate != "" {
@@ -166,24 +162,31 @@ func GetEmployeeTerminationRatio(
 	}
 
 	query += `
-			AND (? = 0 OR f.DeptID = ?)
-			AND (? = 0 OR f.EmpStatusID = ?)
-			AND (? = 0 OR f.PositionID = ?)
-			AND (? = '' OR e.State = ?)
-			AND (? = '' OR e.Gender = ?)
-		) AS sub
-		GROUP BY sub.termination_label
-		ORDER BY total DESC
-	`
+	AND (? = 0 OR f.DeptID = ?)
+	AND (? = 0 OR f.EmpStatusID = ?)
+	AND (? = 0 OR f.ManagerID = ?)
+	AND (? = 0 OR f.PositionID = ?)
+	AND (? = '' OR e.State = ?)
+`
 
 	args = append(args,
 		deptID, deptID,
 		empStatusID, empStatusID,
+		managerID, managerID,
 		positionID, positionID,
 		state, state,
-		gender, gender,
 	)
 
-	err = config.DB.Raw(query, args...).Scan(&result).Error
+	// Bungkus jadi subquery
+	finalQuery := `
+	SELECT termination_label AS name, COUNT(*) AS total
+	FROM (` + query + `) sub
+	WHERE termination_label IS NOT NULL
+	GROUP BY termination_label
+	ORDER BY total DESC
+`
+
+	err = config.DB.Raw(finalQuery, args...).Scan(&result).Error
+
 	return
 }
