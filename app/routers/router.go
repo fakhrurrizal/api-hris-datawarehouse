@@ -71,6 +71,7 @@ func Init(app *echo.Echo) {
 
 			dashboard.GET("/heatmap-days-late", controllers.GetMonthlyHeatmapLateByDepartment, middlewares.Auth())
 			dashboard.GET("/employees-per-marital-status", controllers.GetEmployeeByMaritalStatus, middlewares.Auth())
+			dashboard.GET("/top-10-termination-departments", controllers.GetTop10TerminatedDepartmentsController, middlewares.Auth())
 		}
 		dim := api.Group("/dim", middlewares.CheckAPIKey())
 		{

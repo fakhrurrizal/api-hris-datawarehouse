@@ -1521,6 +1521,76 @@
                 }
             }
         },
+        "/v1/dashboard/top-10-termination-departments": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Top 10 departemen dengan jumlah karyawan yang paling banyak diberhentikan",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get Top 10 Terminated Departments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Employee Status ID",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Manager ID",
+                        "name": "manager_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Position ID",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "State",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start Date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/dim/department": {
             "get": {
                 "security": [

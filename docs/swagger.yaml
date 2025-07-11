@@ -966,6 +966,50 @@ paths:
       summary: Get Dashboard Score Card
       tags:
       - Dashboard
+  /v1/dashboard/top-10-termination-departments:
+    get:
+      description: Top 10 departemen dengan jumlah karyawan yang paling banyak diberhentikan
+      parameters:
+      - description: Employee Status ID
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: Manager ID
+        in: query
+        name: manager_id
+        type: integer
+      - description: Position ID
+        in: query
+        name: position_id
+        type: integer
+      - description: State
+        in: query
+        name: state
+        type: string
+      - description: 'Start Date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'End Date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Top 10 Terminated Departments
+      tags:
+      - Dashboard
   /v1/dim/department:
     get:
       description: Get All Department With Pagination

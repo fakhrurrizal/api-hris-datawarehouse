@@ -138,13 +138,13 @@ func GetEmployeeTerminationRatio(
 				OR LOWER(f.TermReason) LIKE '%unhappy%'
 				OR LOWER(f.TermReason) LIKE '%maternity%'
 				OR LOWER(f.TermReason) LIKE '%retiring%'
-			THEN 'Voluntarily Terminated'
+			THEN 'Dihentikan Secara Sukarela'
 
 			WHEN LOWER(f.TermReason) LIKE '%gross misconduct%'
 				OR LOWER(f.TermReason) LIKE '%no-call%'
 				OR LOWER(f.TermReason) LIKE '%performance%'
 				OR LOWER(f.TermReason) LIKE '%attendance%'
-			THEN 'Terminated for Cause'
+			THEN 'Dihentikan karena suatu alasan'
 			ELSE NULL
 		END AS termination_label
 	FROM fact_employment f
