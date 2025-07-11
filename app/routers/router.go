@@ -60,7 +60,7 @@ func Init(app *echo.Echo) {
 			dashboard.GET("/barchart-average-salary-per-position", controllers.GetDashboardBarChartAverageSalaryPerPosition, middlewares.Auth())
 			dashboard.GET("/highest-lowest-salary", controllers.GetDashboardHighestLowestSalary, middlewares.Auth())
 			dashboard.GET("/average-performance-score-per-department", controllers.GetDashboardAveragePerformanceScorePerDepartmentWithCount, middlewares.Auth())
-			dashboard.GET("/barchart-average-emp-satisfaction-per-position", controllers.GetDashboardBarChartAverageEmpSatisfactionPerPosition, middlewares.Auth())
+			dashboard.GET("/heatmap-average-emp-satisfaction-per-position", controllers.GetDashboardBarchartAverageEmpSatisfactionPerPosition, middlewares.Auth())
 			dashboard.GET("/barchart-employee-termination-by-reason", controllers.GetDashboardBarChartEmployeeTerminationByReason, middlewares.Auth())
 			dashboard.GET("/barchart-employee-termination-by-department", controllers.GetDashboardBarChartEmployeeTerminationByDepartment, middlewares.Auth())
 			dashboard.GET("/piechart-employee-termination-ratio", controllers.GetDashboardPieChartEmployeeTerminationRatio, middlewares.Auth())

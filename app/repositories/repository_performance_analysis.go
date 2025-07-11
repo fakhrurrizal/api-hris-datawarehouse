@@ -62,23 +62,31 @@ func GetAveragePerformanceScorePerDepartmentWithCount(
 	return
 }
 
-func GetAverageEmpSatisfactionPerPositionRounded(
+func GetSatisfactionHeatmapByPosition(
 	startDate, endDate string,
 	empStatusID, managerID, positionID, deptID int,
 	state, gender string,
-) (result []PerformanceScoreCount, err error) {
+) (result []struct {
+	X     string  `json:"x"`     // Posisi
+	Y     string  `json:"y"`     // Kategori tetap, misalnya "EmpSatisfaction"
+	Value float64 `json:"value"` // Rata-rata EmpSatisfaction
+}, err error) {
 	query := `
-		SELECT pos.Position AS name, ROUND(AVG(p.EmpSatisfaction), 2) AS total
+		SELECT 
+			pos.Position AS x, 
+			'Satisfaction' AS y, 
+			ROUND(AVG(p.EmpSatisfaction), 2) AS value
 		FROM fact_employment f
 		INNER JOIN dim_employee e ON f.EmpID = e.EmpID
 		INNER JOIN dim_position pos ON f.PositionID = pos.PositionID
 		INNER JOIN dim_performance p ON f.PerfScoreID = p.PerfScoreID
 		WHERE f.Is_Terminated = 0
-		AND p.EmpSatisfaction IS NOT NULL
-		AND p.EmpSatisfaction > 0
+			AND p.EmpSatisfaction IS NOT NULL
+			AND p.EmpSatisfaction > 0
 	`
 
 	var args []interface{}
+
 	if startDate != "" && endDate != "" {
 		query += " AND f.DateofHire BETWEEN ? AND ?"
 		args = append(args, startDate, endDate)
@@ -92,7 +100,7 @@ func GetAverageEmpSatisfactionPerPositionRounded(
 		AND (? = '' OR e.Gender = ?)
 	`
 
-	query += " GROUP BY pos.Position, f.PositionID ORDER BY total DESC"
+	query += ` GROUP BY pos.Position ORDER BY value DESC`
 
 	args = append(args,
 		deptID, deptID,
@@ -111,8 +119,8 @@ func GetEmployeeCountByMaritalStatus(
 	empStatusID, managerID, positionID, deptID, maritalStatusID int,
 	state string,
 ) (result []struct {
-	Name  string `json:"name"` 
-	Total int    `json:"total"` 
+	Name  string `json:"name"`
+	Total int    `json:"total"`
 }, err error) {
 
 	query := `

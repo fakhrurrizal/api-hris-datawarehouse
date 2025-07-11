@@ -58,10 +58,10 @@ func GetDashboardAveragePerformanceScorePerDepartmentWithCount(c echo.Context) e
 // @Param end_date query string false "end_date (format: 2006-01-02)"
 // @Produce json
 // @Success 200
-// @Router /v1/dashboard/barchart-average-emp-satisfaction-per-position [get]
+// @Router /v1/dashboard/heatmap-average-emp-satisfaction-per-position [get]
 // @Security ApiKeyAuth
 // @Security JwtToken
-func GetDashboardBarChartAverageEmpSatisfactionPerPosition(c echo.Context) error {
+func GetDashboardBarchartAverageEmpSatisfactionPerPosition(c echo.Context) error {
 	State := c.QueryParam("state")
 	Gender := c.QueryParam("gender")
 	EmpStatusID, _ := strconv.Atoi(c.QueryParam("emp_status_id"))
@@ -71,7 +71,7 @@ func GetDashboardBarChartAverageEmpSatisfactionPerPosition(c echo.Context) error
 	endDate := c.QueryParam("end_date")
 
 	startDate, endDate = CheckDate(startDate, endDate)
-	data, err := repository.GetAverageEmpSatisfactionPerPositionRounded(startDate, endDate, EmpStatusID, 0, PositionID, DepartmentID, State, Gender)
+	data, err := repository.GetSatisfactionHeatmapByPosition(startDate, endDate, EmpStatusID, 0, PositionID, DepartmentID, State, Gender)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})

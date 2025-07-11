@@ -149,75 +149,6 @@
                 }
             }
         },
-        "/v1/dashboard/barchart-average-emp-satisfaction-per-position": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    },
-                    {
-                        "JwtToken": []
-                    }
-                ],
-                "description": "Get Dashboard Bar Chart Average Employee Satisfaction Per Position",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "PerformanceAnalysis"
-                ],
-                "summary": "Get Dashboard Bar Chart Average Employee Satisfaction Per Position",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "department_id (int)",
-                        "name": "department_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "emp_status_id (int)",
-                        "name": "emp_status_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "position_id (int)",
-                        "name": "position_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "gender (string)",
-                        "name": "gender",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "state (string)",
-                        "name": "state",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "start_date (format: 2006-01-02)",
-                        "name": "start_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "end_date (format: 2006-01-02)",
-                        "name": "end_date",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/v1/dashboard/barchart-average-salary-per-department": {
             "get": {
                 "security": [
@@ -935,6 +866,75 @@
                                 "additionalProperties": true
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/v1/dashboard/heatmap-average-emp-satisfaction-per-position": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtToken": []
+                    }
+                ],
+                "description": "Get Dashboard Bar Chart Average Employee Satisfaction Per Position",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PerformanceAnalysis"
+                ],
+                "summary": "Get Dashboard Bar Chart Average Employee Satisfaction Per Position",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "department_id (int)",
+                        "name": "department_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "emp_status_id (int)",
+                        "name": "emp_status_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "position_id (int)",
+                        "name": "position_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "gender (string)",
+                        "name": "gender",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "state (string)",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }

@@ -103,49 +103,6 @@ paths:
       summary: Get Dashboard Average Performance Score Per Department with Count
       tags:
       - PerformanceAnalysis
-  /v1/dashboard/barchart-average-emp-satisfaction-per-position:
-    get:
-      description: Get Dashboard Bar Chart Average Employee Satisfaction Per Position
-      parameters:
-      - description: department_id (int)
-        in: query
-        name: department_id
-        type: integer
-      - description: emp_status_id (int)
-        in: query
-        name: emp_status_id
-        type: integer
-      - description: position_id (int)
-        in: query
-        name: position_id
-        type: integer
-      - description: gender (string)
-        in: query
-        name: gender
-        type: string
-      - description: state (string)
-        in: query
-        name: state
-        type: string
-      - description: 'start_date (format: 2006-01-02)'
-        in: query
-        name: start_date
-        type: string
-      - description: 'end_date (format: 2006-01-02)'
-        in: query
-        name: end_date
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      - JwtToken: []
-      summary: Get Dashboard Bar Chart Average Employee Satisfaction Per Position
-      tags:
-      - PerformanceAnalysis
   /v1/dashboard/barchart-average-salary-per-department:
     get:
       description: Get SalaryDistribution Bar Chart Average Salary Per Department
@@ -599,6 +556,49 @@ paths:
       summary: Get Total Employees per Marital Status
       tags:
       - Dashboard
+  /v1/dashboard/heatmap-average-emp-satisfaction-per-position:
+    get:
+      description: Get Dashboard Bar Chart Average Employee Satisfaction Per Position
+      parameters:
+      - description: department_id (int)
+        in: query
+        name: department_id
+        type: integer
+      - description: emp_status_id (int)
+        in: query
+        name: emp_status_id
+        type: integer
+      - description: position_id (int)
+        in: query
+        name: position_id
+        type: integer
+      - description: gender (string)
+        in: query
+        name: gender
+        type: string
+      - description: state (string)
+        in: query
+        name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      - JwtToken: []
+      summary: Get Dashboard Bar Chart Average Employee Satisfaction Per Position
+      tags:
+      - PerformanceAnalysis
   /v1/dashboard/heatmap-days-late:
     get:
       description: Heatmap keterlambatan masuk berdasarkan hari dan departemen
