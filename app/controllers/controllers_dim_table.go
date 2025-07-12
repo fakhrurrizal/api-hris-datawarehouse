@@ -250,13 +250,15 @@ func GetDimPosition(c echo.Context) error {
 // @Security ApiKeyAuth
 // @Security JwtToken
 func GetEmploymentWithFilters(c echo.Context) error {
-	param := utils.PopulatePaging(c, "e.EmployeeName")
+	param := utils.PopulatePaging(c, "e.Employee_Name")
 
+	// Ambil semua query param
 	gender := c.QueryParam("gender")
 	state := c.QueryParam("state")
 	startDate := c.QueryParam("start_date")
 	endDate := c.QueryParam("end_date")
 
+	// Parsing integer, jika error dianggap 0
 	departmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
 	positionID, _ := strconv.Atoi(c.QueryParam("position_id"))
 	empStatusID, _ := strconv.Atoi(c.QueryParam("emp_status_id"))
@@ -267,13 +269,12 @@ func GetEmploymentWithFilters(c echo.Context) error {
 		"state":         state,
 		"start_date":    startDate,
 		"end_date":      endDate,
-		"department_id": departmentID,
 		"position_id":   positionID,
 		"emp_status_id": empStatusID,
 		"manager_id":    managerID,
 	}
 
-	data, err := repository.GetEmploymentWithFilters(param)
+	data, err := repository.GetEmploymentWithFilters(departmentID, param)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message": "Failed to get employment data",

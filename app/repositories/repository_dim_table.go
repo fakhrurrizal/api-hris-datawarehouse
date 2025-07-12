@@ -259,16 +259,60 @@ func GetPositions(param reqres.ReqPaging) (data reqres.ResPaging, err error) {
 	return
 }
 
-func GetEmploymentWithFilters(param reqres.ReqPaging) (data reqres.ResPaging, err error) {
+func GetEmploymentWithFilters(departmentID int, param reqres.ReqPaging) (data reqres.ResPaging, err error) {
 	var responses []models.EmploymentResponse
 	where := "f.Is_Terminated = 'No'"
 	var args []interface{}
 
+	// Pastikan Custom bertipe map[string]interface{}
+	custom, ok := param.Custom.(map[string]interface{})
+	if !ok {
+		custom = make(map[string]interface{})
+	}
+
+	// Filter pencarian nama
 	if param.Search != "" {
 		where += " AND e.Employee_Name ILIKE ?"
 		args = append(args, "%"+param.Search+"%")
 	}
 
+	// Filter berdasarkan DeptID langsung dari kolom fact_employment
+	if departmentID != 0 {
+		where += " AND f.DeptID = ?"
+		args = append(args, departmentID)
+	}
+
+	// Filter tambahan lain
+	if gender, ok := custom["gender"].(string); ok && gender != "" {
+		where += " AND e.Gender = ?"
+		args = append(args, gender)
+	}
+	if state, ok := custom["state"].(string); ok && state != "" {
+		where += " AND e.State = ?"
+		args = append(args, state)
+	}
+	if startDate, ok := custom["start_date"].(string); ok && startDate != "" {
+		where += " AND f.DateofHire >= ?"
+		args = append(args, startDate)
+	}
+	if endDate, ok := custom["end_date"].(string); ok && endDate != "" {
+		where += " AND f.DateofHire <= ?"
+		args = append(args, endDate)
+	}
+	if positionID, ok := custom["position_id"].(int); ok && positionID != 0 {
+		where += " AND f.PositionID = ?"
+		args = append(args, positionID)
+	}
+	if empStatusID, ok := custom["emp_status_id"].(int); ok && empStatusID != 0 {
+		where += " AND f.EmpStatusID = ?"
+		args = append(args, empStatusID)
+	}
+	if managerID, ok := custom["manager_id"].(int); ok && managerID != 0 {
+		where += " AND f.ManagerID = ?"
+		args = append(args, managerID)
+	}
+
+	// Hitung total data
 	var total int64
 	countQuery := fmt.Sprintf(`
 		SELECT COUNT(*)
@@ -285,6 +329,7 @@ func GetEmploymentWithFilters(param reqres.ReqPaging) (data reqres.ResPaging, er
 		return
 	}
 
+	// Validasi sorting
 	utils.ValidateSort(&param, map[string]bool{
 		"e.Employee_Name": true,
 		"p.Position":      true,
