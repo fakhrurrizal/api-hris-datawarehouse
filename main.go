@@ -23,7 +23,6 @@ func main() {
 	app := echo.New()
 	router.Init(app)
 	config.Database()
-	config.Redis()
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 
 	app.Server.Addr = "127.0.0.1:" + config.LoadConfig().Port
