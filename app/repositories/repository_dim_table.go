@@ -261,7 +261,7 @@ func GetPositions(param reqres.ReqPaging) (data reqres.ResPaging, err error) {
 
 func GetEmploymentWithFilters(param reqres.ReqPaging) (data reqres.ResPaging, err error) {
 	var responses []models.EmploymentResponse
-	where := "1=1"
+	where := "f.Is_Terminated = 'No'"
 	var args []interface{}
 
 	if param.Search != "" {
@@ -269,7 +269,6 @@ func GetEmploymentWithFilters(param reqres.ReqPaging) (data reqres.ResPaging, er
 		args = append(args, "%"+param.Search+"%")
 	}
 
-	// Hitung total data
 	var total int64
 	countQuery := fmt.Sprintf(`
 		SELECT COUNT(*)
