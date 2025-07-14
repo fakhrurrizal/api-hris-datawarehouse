@@ -264,25 +264,21 @@ func GetEmploymentWithFilters(departmentID int, param reqres.ReqPaging) (data re
 	where := "f.Is_Terminated = 'No'"
 	var args []interface{}
 
-	// Pastikan Custom bertipe map[string]interface{}
 	custom, ok := param.Custom.(map[string]interface{})
 	if !ok {
 		custom = make(map[string]interface{})
 	}
 
-	// Filter pencarian nama
 	if param.Search != "" {
 		where += " AND e.Employee_Name ILIKE ?"
 		args = append(args, "%"+param.Search+"%")
 	}
 
-	// Filter berdasarkan DeptID langsung dari kolom fact_employment
 	if departmentID != 0 {
 		where += " AND f.DeptID = ?"
 		args = append(args, departmentID)
 	}
 
-	// Filter tambahan lain
 	if gender, ok := custom["gender"].(string); ok && gender != "" {
 		where += " AND e.Gender = ?"
 		args = append(args, gender)
@@ -312,16 +308,16 @@ func GetEmploymentWithFilters(departmentID int, param reqres.ReqPaging) (data re
 		args = append(args, managerID)
 	}
 
-	// Hitung total data
 	var total int64
 	countQuery := fmt.Sprintf(`
-		SELECT COUNT(*)
-		FROM fact_employment f
-		JOIN dim_employee e ON f.EmpID = e.EmpID
-		JOIN dim_department d ON f.DeptID = d.DeptID
-		JOIN dim_position p ON f.PositionID = p.PositionID
-		LEFT JOIN dim_manager m ON f.ManagerID = m.ManagerID
-		WHERE %s
+	SELECT COUNT(*)
+	FROM fact_employment f
+	JOIN dim_employee e ON f.EmpID = e.EmpID
+	JOIN dim_department d ON f.DeptID = d.DeptID
+	JOIN dim_position p ON f.PositionID = p.PositionID
+	JOIN dim_marital_status ms ON e.MaritalStatusID = ms.MaritalStatusID
+	LEFT JOIN dim_manager m ON f.ManagerID = m.ManagerID
+	WHERE %s
 	`, where)
 
 	err = config.DB.Raw(countQuery, args...).Scan(&total).Error
@@ -329,7 +325,6 @@ func GetEmploymentWithFilters(departmentID int, param reqres.ReqPaging) (data re
 		return
 	}
 
-	// Validasi sorting
 	utils.ValidateSort(&param, map[string]bool{
 		"e.Employee_Name": true,
 		"p.Position":      true,
@@ -339,34 +334,36 @@ func GetEmploymentWithFilters(departmentID int, param reqres.ReqPaging) (data re
 	}, "e.Employee_Name")
 
 	dataQuery := fmt.Sprintf(`
-		SELECT 
-			f.EmpID,
-			e.Employee_Name AS employee_name,
-			p.Position,
-			d.Department,
-			COALESCE(m.ManagerName, '-') AS ManagerName,
-			DATE_FORMAT(f.DateofHire, '%%Y-%%m-%%d') AS DateOfHire,
-			DATE_FORMAT(f.DateofTermination, '%%Y-%%m-%%d') AS DateOfTermination,
-			f.TermReason,
-			f.Salary,
-			e.Gender,
-			e.State,
-			e.Zip,
-			e.CitizenDesc,
-			e.HispanicLatino,
-			e.RaceDesc,
-			f.Tenure_Days,
-			f.DaysLateLast30,
-			f.Absences,
-			f.RecruitmentSource
-		FROM fact_employment f
-		JOIN dim_employee e ON f.EmpID = e.EmpID
-		JOIN dim_department d ON f.DeptID = d.DeptID
-		JOIN dim_position p ON f.PositionID = p.PositionID
-		LEFT JOIN dim_manager m ON f.ManagerID = m.ManagerID
-		WHERE %s
-		ORDER BY %s %s
-		LIMIT ? OFFSET ?
+	SELECT 
+		f.EmpID,
+		e.Employee_Name AS employee_name,
+		p.Position,
+		d.Department,
+		COALESCE(m.ManagerName, '-') AS ManagerName,
+		DATE_FORMAT(f.DateofHire, '%%Y-%%m-%%d') AS DateOfHire,
+		DATE_FORMAT(f.DateofTermination, '%%Y-%%m-%%d') AS DateOfTermination,
+		f.TermReason,
+		f.Salary,
+		e.Gender,
+		e.State,
+		e.Zip,
+		e.CitizenDesc,
+		e.HispanicLatino,
+		e.RaceDesc,
+		ms.MaritalDesc,
+		f.Tenure_Days,
+		f.DaysLateLast30,
+		f.Absences,
+		f.RecruitmentSource
+	FROM fact_employment f
+	JOIN dim_employee e ON f.EmpID = e.EmpID
+	JOIN dim_department d ON f.DeptID = d.DeptID
+	JOIN dim_position p ON f.PositionID = p.PositionID
+	JOIN dim_marital_status ms ON e.MaritalStatusID = ms.MaritalStatusID
+	LEFT JOIN dim_manager m ON f.ManagerID = m.ManagerID
+	WHERE %s
+	ORDER BY %s %s
+	LIMIT ? OFFSET ?
 	`, where, param.Sort, param.Order)
 
 	args = append(args, param.Limit, param.Offset)

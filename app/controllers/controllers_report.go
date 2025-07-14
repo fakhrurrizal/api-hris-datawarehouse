@@ -45,6 +45,7 @@ func GetDashboardScoreCard(c echo.Context) error {
 	data.TurnoverPercentage, _ = repository.GetTurnoverRate(startDate, endDate, departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
 	data.AveragePerformance, _ = repository.GetAveragePerformanceScore(departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
 	data.AverageDaysLateLast30, _ = repository.GetAverageDaysLateLast30(departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
+	data.GetTotalSalaryExpenditure, _ = repository.GetTotalSalaryExpenditure(departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
 	return c.JSON(http.StatusOK, data)
 }
 
@@ -208,10 +209,10 @@ func GetDashboardBarChartEmployeePerRaceDesc(c echo.Context) error {
 	ManagerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
 	startDate := c.QueryParam("start_date")
 	endDate := c.QueryParam("end_date")
-	
+
 	startDate, endDate = CheckDate(startDate, endDate)
 	data, _ := repository.GetEmployeeCountPerRaceDesc(startDate, endDate, EmpStatusID, ManagerID, PositionID, DepartmentID, State, Gender)
-	
+
 	return c.JSON(http.StatusOK, data)
 }
 
@@ -233,4 +234,62 @@ func CheckDate(startDate, endDate string) (string, string) {
 	}
 
 	return startDate, endDate
+}
+
+// GetDashboardPieChartMaritalStatusRatio godoc
+// @Summary Get Dashboard Pie Chart Employee Marital Status Ratio
+// @Tags MaritalAnalysis
+// @Param department_id query integer false "department_id"
+// @Param emp_status_id query integer false "emp_status_id"
+// @Param position_id query integer false "position_id"
+// @Param manager_id query integer false "manager_id"
+// @Param gender query string false "gender"
+// @Param state query string false "state"
+// @Produce json
+// @Success 200
+// @Router /v1/dashboard/piechart-employee-marital-ratio [get]
+// @Security ApiKeyAuth
+// @Security JwtToken
+func GetDashboardPieChartMaritalStatusRatio(c echo.Context) error {
+	state := c.QueryParam("state")
+	gender := c.QueryParam("gender")
+	empStatusID, _ := strconv.Atoi(c.QueryParam("emp_status_id"))
+	positionID, _ := strconv.Atoi(c.QueryParam("position_id"))
+	managerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
+	departmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
+
+	data, err := repository.GetEmployeeMaritalRatio(departmentID, empStatusID, managerID, positionID, state, gender)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, data)
+}
+
+// GetDashboardPieChartAgeRatio godoc
+// @Summary Get Dashboard Pie Chart Employee Age Ratio
+// @Tags AgeAnalysis
+// @Param department_id query integer false "department_id"
+// @Param emp_status_id query integer false "emp_status_id"
+// @Param position_id query integer false "position_id"
+// @Param manager_id query integer false "manager_id"
+// @Param gender query string false "gender"
+// @Param state query string false "state"
+// @Produce json
+// @Success 200
+// @Router /v1/dashboard/piechart-employee-age-ratio [get]
+// @Security ApiKeyAuth
+// @Security JwtToken
+func GetDashboardPieChartAgeRatio(c echo.Context) error {
+	state := c.QueryParam("state")
+	gender := c.QueryParam("gender")
+	empStatusID, _ := strconv.Atoi(c.QueryParam("emp_status_id"))
+	positionID, _ := strconv.Atoi(c.QueryParam("position_id"))
+	managerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
+	departmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
+
+	data, err := repository.GetEmployeeAgeRatio(departmentID, empStatusID, managerID, positionID, state, gender)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, data)
 }

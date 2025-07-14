@@ -184,3 +184,93 @@ func GetEmployeeCountPerRaceDesc(
 	err = config.DB.Raw(query, args...).Scan(&result).Error
 	return
 }
+
+func GetEmployeeMaritalRatio(
+	deptID, empStatusID, managerID, positionID int,
+	state, gender string,
+) (result []EmpRatio, err error) {
+	query := `
+		SELECT ms.MaritalDesc AS name, COUNT(*) AS total
+		FROM fact_employment f
+		JOIN dim_employee e ON f.EmpID = e.EmpID
+		JOIN dim_marital_status ms ON e.MaritalStatusID = ms.MaritalStatusID
+		WHERE f.DateofTermination IS NULL
+	`
+
+	var args []interface{}
+
+	query += `
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
+		AND (? = '' OR e.State = ?)
+		AND (? = '' OR e.Gender = ?)
+	`
+
+	args = append(args,
+		deptID, deptID,
+		empStatusID, empStatusID,
+		managerID, managerID,
+		positionID, positionID,
+		state, state,
+		gender, gender,
+	)
+
+	query += `
+		GROUP BY ms.MaritalDesc
+		ORDER BY total DESC
+	`
+
+	err = config.DB.Raw(query, args...).Scan(&result).Error
+	return
+}
+
+func GetEmployeeAgeRatio(
+	deptID, empStatusID, managerID, positionID int,
+	state, gender string,
+) (result []EmpRatio, err error) {
+	query := `
+		SELECT 
+			CASE
+				WHEN age < 25 THEN '< 25'
+				WHEN age BETWEEN 25 AND 34 THEN '25-34'
+				WHEN age BETWEEN 35 AND 44 THEN '35-44'
+				WHEN age BETWEEN 45 AND 54 THEN '45-54'
+				ELSE '55+'
+			END AS name,
+			COUNT(*) AS total
+		FROM (
+			SELECT 
+				TIMESTAMPDIFF(YEAR, e.DateofBirth, CURDATE()) AS age
+			FROM fact_employment f
+			JOIN dim_employee e ON f.EmpID = e.EmpID
+			WHERE f.DateofTermination IS NULL
+	`
+
+	var args []interface{}
+
+	query += `
+		AND (? = 0 OR f.DeptID = ?)
+		AND (? = 0 OR f.EmpStatusID = ?)
+		AND (? = 0 OR f.ManagerID = ?)
+		AND (? = 0 OR f.PositionID = ?)
+		AND (? = '' OR e.State = ?)
+		AND (? = '' OR e.Gender = ?)
+		) sub
+		GROUP BY name
+		ORDER BY name
+	`
+
+	args = append(args,
+		deptID, deptID,
+		empStatusID, empStatusID,
+		managerID, managerID,
+		positionID, positionID,
+		state, state,
+		gender, gender,
+	)
+
+	err = config.DB.Raw(query, args...).Scan(&result).Error
+	return
+}

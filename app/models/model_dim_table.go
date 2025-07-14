@@ -82,4 +82,5 @@ type EmploymentResponse struct {
 	DaysLateLast30     int     `json:"days_late_last_30"`
 	Absences           int     `json:"absences"`
 	RecruitmentSource  string  `json:"recruitment_source"`
+	MaritalDesc       string  `json:"marital_desc"`
 }

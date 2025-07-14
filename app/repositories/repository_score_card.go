@@ -39,7 +39,6 @@ func buildFilterQuery(
 	return query, args
 }
 
-
 func GetTotalActiveEmployees(
 	startDate, endDate string,
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
@@ -65,8 +64,6 @@ func GetTotalActiveEmployees(
 	err = config.DB.Raw(query, args...).Scan(&total).Error
 	return
 }
-
-
 
 func GetTurnoverRate(
 	startDate, endDate string,
@@ -122,7 +119,6 @@ func GetTurnoverRate(
 	return
 }
 
-
 func GetAveragePerformanceScore(
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
 ) (avgScore float64, err error) {
@@ -142,7 +138,6 @@ func GetAveragePerformanceScore(
 	return
 }
 
-
 func GetAverageDaysLateLast30(
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
 ) (avgDays float64, err error) {
@@ -159,5 +154,23 @@ func GetAverageDaysLateLast30(
 	query += filter
 
 	err = config.DB.Raw(query, filterArgs...).Scan(&avgDays).Error
+	return
+}
+
+func GetTotalSalaryExpenditure(
+	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
+) (totalSalary float64, err error) {
+	query := `
+		SELECT SUM(f.Salary) AS total_salary
+		FROM fact_employment f
+		JOIN dim_employee e USING(EmpID)
+		JOIN dim_department d USING(DeptID)
+		WHERE f.DateofTermination IS NULL
+	`
+
+	filter, filterArgs := buildFilterQuery(departmentID, gender, empStatusID, managerID, positionID, state)
+	query += filter
+
+	err = config.DB.Raw(query, filterArgs...).Scan(&totalSalary).Error
 	return
 }
