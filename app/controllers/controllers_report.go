@@ -43,9 +43,10 @@ func GetDashboardScoreCard(c echo.Context) error {
 	var data reqres.DashboardScoreCard
 	data.TotalEmployee, _ = repository.GetTotalActiveEmployees(startDate, endDate, departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
 	data.TurnoverPercentage, _ = repository.GetTurnoverRate(startDate, endDate, departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
-	data.AveragePerformance, _ = repository.GetAveragePerformanceScore(departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
-	data.AverageDaysLateLast30, _ = repository.GetAverageDaysLateLast30(departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
-	data.GetTotalSalaryExpenditure, _ = repository.GetTotalSalaryExpenditure(departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
+	data.AveragePerformance, _ = repository.GetAveragePerformanceScore(startDate, endDate, departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
+	data.AverageDaysLateLast30, _ = repository.GetAverageDaysLateLast30(startDate, endDate, departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
+	data.GetTotalSalaryExpenditure, _ = repository.GetTotalSalaryExpenditure(startDate, endDate, departmentID, Gender, EmpStatusID, ManagerID, PositionID, State)
+
 	return c.JSON(http.StatusOK, data)
 }
 
@@ -245,6 +246,8 @@ func CheckDate(startDate, endDate string) (string, string) {
 // @Param manager_id query integer false "manager_id"
 // @Param gender query string false "gender"
 // @Param state query string false "state"
+// @Param start_date query string false "start_date (format: 2006-01-02)"
+// @Param end_date query string false "end_date (format: 2006-01-02)"
 // @Produce json
 // @Success 200
 // @Router /v1/dashboard/piechart-employee-marital-ratio [get]
@@ -257,8 +260,12 @@ func GetDashboardPieChartMaritalStatusRatio(c echo.Context) error {
 	positionID, _ := strconv.Atoi(c.QueryParam("position_id"))
 	managerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
 	departmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
+	startDate := c.QueryParam("start_date")
+	endDate := c.QueryParam("end_date")
+	startDate, endDate = CheckDate(startDate, endDate)
 
-	data, err := repository.GetEmployeeMaritalRatio(departmentID, empStatusID, managerID, positionID, state, gender)
+	data, err := repository.GetEmployeeMaritalRatio(departmentID, empStatusID, managerID, positionID, state, gender, startDate, endDate)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
@@ -274,6 +281,8 @@ func GetDashboardPieChartMaritalStatusRatio(c echo.Context) error {
 // @Param manager_id query integer false "manager_id"
 // @Param gender query string false "gender"
 // @Param state query string false "state"
+// @Param start_date query string false "start_date (format: 2006-01-02)"
+// @Param end_date query string false "end_date (format: 2006-01-02)"
 // @Produce json
 // @Success 200
 // @Router /v1/dashboard/piechart-employee-age-ratio [get]
@@ -286,8 +295,12 @@ func GetDashboardPieChartAgeRatio(c echo.Context) error {
 	positionID, _ := strconv.Atoi(c.QueryParam("position_id"))
 	managerID, _ := strconv.Atoi(c.QueryParam("manager_id"))
 	departmentID, _ := strconv.Atoi(c.QueryParam("department_id"))
+	startDate := c.QueryParam("start_date")
+	endDate := c.QueryParam("end_date")
+	startDate, endDate = CheckDate(startDate, endDate)
 
-	data, err := repository.GetEmployeeAgeRatio(departmentID, empStatusID, managerID, positionID, state, gender)
+	data, err := repository.GetEmployeeAgeRatio(departmentID, empStatusID, managerID, positionID, state, gender, startDate, endDate)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}

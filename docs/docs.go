@@ -1438,6 +1438,18 @@ const docTemplate = `{
                         "description": "state",
                         "name": "state",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1499,6 +1511,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "state",
                         "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_date (format: 2006-01-02)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date (format: 2006-01-02)",
+                        "name": "end_date",
                         "in": "query"
                     }
                 ],

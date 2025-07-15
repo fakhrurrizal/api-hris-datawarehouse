@@ -902,6 +902,14 @@ paths:
         in: query
         name: state
         type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
+        type: string
       produces:
       - application/json
       responses:
@@ -939,6 +947,14 @@ paths:
       - description: state
         in: query
         name: state
+        type: string
+      - description: 'start_date (format: 2006-01-02)'
+        in: query
+        name: start_date
+        type: string
+      - description: 'end_date (format: 2006-01-02)'
+        in: query
+        name: end_date
         type: string
       produces:
       - application/json

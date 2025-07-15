@@ -187,7 +187,7 @@ func GetEmployeeCountPerRaceDesc(
 
 func GetEmployeeMaritalRatio(
 	deptID, empStatusID, managerID, positionID int,
-	state, gender string,
+	state, gender, startDate, endDate string,
 ) (result []EmpRatio, err error) {
 	query := `
 		SELECT ms.MaritalDesc AS name, COUNT(*) AS total
@@ -198,6 +198,11 @@ func GetEmployeeMaritalRatio(
 	`
 
 	var args []interface{}
+
+	if startDate != "" && endDate != "" {
+		query += ` AND f.DateofHire BETWEEN ? AND ?`
+		args = append(args, startDate, endDate)
+	}
 
 	query += `
 		AND (? = 0 OR f.DeptID = ?)
@@ -228,7 +233,7 @@ func GetEmployeeMaritalRatio(
 
 func GetEmployeeAgeRatio(
 	deptID, empStatusID, managerID, positionID int,
-	state, gender string,
+	state, gender, startDate, endDate string,
 ) (result []EmpRatio, err error) {
 	query := `
 		SELECT 
@@ -249,6 +254,11 @@ func GetEmployeeAgeRatio(
 	`
 
 	var args []interface{}
+
+	if startDate != "" && endDate != "" {
+		query += ` AND f.DateofHire BETWEEN ? AND ?`
+		args = append(args, startDate, endDate)
+	}
 
 	query += `
 		AND (? = 0 OR f.DeptID = ?)

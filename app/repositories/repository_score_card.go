@@ -120,6 +120,7 @@ func GetTurnoverRate(
 }
 
 func GetAveragePerformanceScore(
+	startDate, endDate string,
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
 ) (avgScore float64, err error) {
 	query := `
@@ -131,14 +132,23 @@ func GetAveragePerformanceScore(
 		AND f.DateofTermination IS NULL
 	`
 
+	var args []interface{}
+
+	if startDate != "" && endDate != "" {
+		query += " AND f.DateofHire BETWEEN ? AND ?"
+		args = append(args, startDate, endDate)
+	}
+
 	filter, filterArgs := buildFilterQuery(departmentID, gender, empStatusID, managerID, positionID, state)
 	query += filter
+	args = append(args, filterArgs...)
 
-	err = config.DB.Raw(query, filterArgs...).Scan(&avgScore).Error
+	err = config.DB.Raw(query, args...).Scan(&avgScore).Error
 	return
 }
 
 func GetAverageDaysLateLast30(
+	startDate, endDate string,
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
 ) (avgDays float64, err error) {
 	query := `
@@ -150,14 +160,23 @@ func GetAverageDaysLateLast30(
 		AND f.DateofTermination IS NULL
 	`
 
+	var args []interface{}
+
+	if startDate != "" && endDate != "" {
+		query += " AND f.DateofHire BETWEEN ? AND ?"
+		args = append(args, startDate, endDate)
+	}
+
 	filter, filterArgs := buildFilterQuery(departmentID, gender, empStatusID, managerID, positionID, state)
 	query += filter
+	args = append(args, filterArgs...)
 
-	err = config.DB.Raw(query, filterArgs...).Scan(&avgDays).Error
+	err = config.DB.Raw(query, args...).Scan(&avgDays).Error
 	return
 }
 
 func GetTotalSalaryExpenditure(
+	startDate, endDate string,
 	departmentID int, gender string, empStatusID int, managerID int, positionID int, state string,
 ) (totalSalary float64, err error) {
 	query := `
@@ -168,9 +187,17 @@ func GetTotalSalaryExpenditure(
 		WHERE f.DateofTermination IS NULL
 	`
 
+	var args []interface{}
+
+	if startDate != "" && endDate != "" {
+		query += " AND f.DateofHire BETWEEN ? AND ?"
+		args = append(args, startDate, endDate)
+	}
+
 	filter, filterArgs := buildFilterQuery(departmentID, gender, empStatusID, managerID, positionID, state)
 	query += filter
+	args = append(args, filterArgs...)
 
-	err = config.DB.Raw(query, filterArgs...).Scan(&totalSalary).Error
+	err = config.DB.Raw(query, args...).Scan(&totalSalary).Error
 	return
 }
